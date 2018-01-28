@@ -34,7 +34,7 @@ server.listen(process.env.PORT || 3000);
 var mysql = require('mysql');
 
 var db = mysql.createConnection({
-  host: "h4.azdigi.com",
+  host: "45.252.248.16",
     user: "imakervn",
   password: "1bb7ge98nl",
   database: "imakervn_coding"
