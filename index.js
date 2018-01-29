@@ -34,10 +34,10 @@ server.listen(process.env.PORT || 3000);
 var mysql = require('mysql');
 
 var db = mysql.createConnection({
-  host: "h4.azdigi.com",
-    user: "imakervn",
-  password: "1bb7ge98nl",
-  database: "imakervn_coding"
+  host: "db-mysql-vn-node2248.hostingnhanh.com",
+    user: "vantu3223",
+  password: "tu221477316",
+  database: "thekinos3223"
 });
 function createDataCode(name, pass,member){
 	return db.connect(function(err) {
