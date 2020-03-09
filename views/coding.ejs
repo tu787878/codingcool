@@ -602,7 +602,7 @@ socket.emit('join',{id:<%=data[0].id%>,user:'<%=user%>'});
 // });
 // editor.setTheme("ace/theme/vala");
 // editor.getSession().setMode("ace/mode/javascript");
-
+editor.setTheme("ace/theme/dracula");
   editor.getSession().on('change', function () {
     if (silent) return "d";
     editor.find(userLast);
