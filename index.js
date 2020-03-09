@@ -33,11 +33,17 @@ server.listen(process.env.PORT || 3000);
 //***********User*******//
 var mysql = require('mysql');
 
+// var db = mysql.createConnection({
+//   host: "localhost",
+//     user: "root",
+//   password: "",
+//   database: "dbs314838"
+// });
 var db = mysql.createConnection({
-  host: "db-mysql-vn-node2248.hostingnhanh.com",
-    user: "vantu3223",
-  password: "tu221477316",
-  database: "thekinos3223"
+  host: "sql2.freemysqlhosting.net",
+  user: "sql2327076",
+  password: "qJ4%pB7%",
+  database: "sql2327076"
 });
 function createDataCode(name, pass,member){
 	return db.connect(function(err) {
