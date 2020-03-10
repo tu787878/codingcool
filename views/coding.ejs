@@ -588,7 +588,10 @@ p {
   </div>
 </div> -->
 
-
+<audio id="myAudio">
+  <source src="audio/banphim.mp3" type="audio/mp3">
+  Your browser does not support the audio element.
+</audio>
 <script type="text/javascript">
 var silent = false;
 var socket = io("https://vantuproject.herokuapp.com/");
@@ -610,6 +613,13 @@ editor.setTheme("ace/theme/dracula");
     var data = editor.getSession().getValue();
     var ll = $('#lang').val();
     console.log("change");
+
+    //âm bàn phím
+    var x = document.getElementById("myAudio"); 
+    function playAudio() { 
+      x.play(); 
+    } 
+    playAudio();
     socket.emit('haha', {id: <%=data[0].id%>,data: data,user:'<%=user%>',lang: ll});
 
 });
