@@ -614,12 +614,7 @@ editor.setTheme("ace/theme/dracula");
     var ll = $('#lang').val();
     console.log("change");
 
-    //âm bàn phím
-    var x = document.getElementById("myAudio"); 
-    function playAudio() { 
-      x.play(); 
-    } 
-    playAudio();
+    
     socket.emit('haha', {id: <%=data[0].id%>,data: data,user:'<%=user%>',lang: ll});
 
 });
@@ -686,8 +681,14 @@ socket.on('nes', data => {
  editor.getSession().setValue(data.dt.data + userLast);
  editor.$blockScrolling = 1;
  silent = false;
+ var x = document.getElementById("myAudio"); 
+    function playAudio() { 
+      x.play(); 
+    } 
+    playAudio();
  // editor.clearSelection();
 });
+
 function searchToggle(obj, evt){
             var container = $(obj).closest('.search-wrapper');
 
