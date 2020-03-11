@@ -251,13 +251,12 @@ app.get('/find',(req,res) => {
 
 
 var allUser = [];
-
+const arrUserInfo = [];
 
 //**********Videocall**********//
 
-
-
 io.on('connection', socket => {
+  
     var room = "";
 		console.log(socket.id);
     // getDataCode(1,socket);
@@ -274,6 +273,15 @@ io.on('connection', socket => {
       updateDataCode(data.id, data.data, data.lang);
       socket.broadcast.to(room).emit('nes',fullData);
       // socket.broadcast.emit('nes',fullData);
+    });
+    socket.on('NGUOI_DUNG_DANG_KY', user => {
+      socket.peerId = user.peerId;
+      // socket.emit('DANH_SACH_ONLINE', arrUserInfo);
+      socket.broadcast.to(room).emit('CO_NGUOI_DUNG_MOI', user);
+    });
+
+    socket.on('disconnect', () => {
+        io.emit('AI_DO_NGAT_KET_NOI', socket.peerId);
     });
 
 });
