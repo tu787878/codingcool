@@ -87,6 +87,7 @@ height: 20px;
 .videoxxx{
   max-width: 270px;
   width: auto;
+  height: 70px;
   border-radius: 20px; 
   overflow: hidden; 
 }
@@ -119,6 +120,7 @@ html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockq
   -moz-box-sizing: border-box;
   box-sizing: border-box;
 }
+
 html { overflow: auto; }
 body {
   background-color: #dbe1ed;
@@ -539,14 +541,14 @@ p {
         <%=data[0].data%>
         </div>
     </div>
-
-  
-    
 </div>
+<button id="audiox">
+  Stop Micro
+</button>
 <div class="col-4">
   <div id="chat">
     <div id="div-chat">
-      <video class = "videoxxx" id="myLocalVideo" controls></video>  <br /><br />
+      <!-- <video class = "videoxxx" id="myLocalVideo" controls></video>  <br /><br /> -->
     </div>
   </div>
 </div>
@@ -623,6 +625,11 @@ p {
   Your browser does not support the audio element.
 </audio>
 <script type="text/javascript">
+$( "#audiox" ).click(function() {
+       
+        localStream.getAudioTracks()[0].stop(); 
+        $(this).attr("id","audioy");
+      });
 var silent = false;
 // var socket = io("https://vantuproject.herokuapp.com/");
 //var socket = io("localhost:3000");
@@ -643,7 +650,7 @@ editor.setTheme("ace/theme/dracula");
     editor.replace("");
     var data = editor.getSession().getValue();
     var ll = $('#lang').val();
-    console.log("change");
+    
     socket.emit('haha', {id: <%=data[0].id%>,data: data,user:'<%=user%>',lang: ll});
 
 });
@@ -651,21 +658,21 @@ $("#lang").val("<%=data[0].lang%>");
 $( "#lang" )
   .change(function () {
     var value = $(this).val();
-    console.log(value);
+  
     editor.getSession().setMode("ace/mode/" + value);
   })
   .change();
 $( "#size" )
     .change(function () {
       var value = $(this).val();
-      console.log(value);
+   
       document.getElementById('editor').style.fontSize= value + 'px';
     })
     .change();
 $( "#them" )
       .change(function () {
         var value = $(this).val();
-        console.log(value);
+       
         editor.setTheme("ace/theme/" + value);
       })
       .change();
@@ -676,8 +683,7 @@ $( "#them" )
 //   silent = false;
 // })
 socket.on('nes', data => {
- console.log("data ne");
- console.log(data);
+
  var val = $('#lang').val();
  var cmt = "", cmt2 = "";
  switch (val) {
