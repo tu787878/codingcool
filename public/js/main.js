@@ -39,7 +39,7 @@ socket.on('AI_DO_NGAT_KET_NOI', peerId => {
 });
 
 function openStream() {
-    const config = { audio: false, video: true };
+    const config = { audio: true, video: true };
     return navigator.mediaDevices.getUserMedia(config);
 }
 
