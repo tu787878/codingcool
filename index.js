@@ -187,7 +187,7 @@ app.get('/', (req,res) => {
   if(req.cookies.name){
     while(!out){
       nameCode = makeNameCode(8);
-      let pass = "";
+      let pass = '';
       let member = 5;
       let lang = "c_cpp";
       createNewCode(nameCode, pass, member, lang);
@@ -261,20 +261,21 @@ app.get('/:nameCode', (req,res) => {
   var query = db.query(sql,[nameCode], (err, result) => {
     if(err) return console.error(err);
     result = JSON.parse(JSON.stringify(result));
-    console.log(result);
+    // console.log(result);
     if(result.length == 0){
-      let pass = "";
+      let pass = '';
       let member = 5;
       let lang = "c_cpp";
       createNewCode(nameCode, pass, member, lang);
-      console.log("thanh cong");
+      // console.log("thanh cong");
       return res.redirect('/' + nameCode);
     }
     
     // if(result[0].pass !== null){
     //   console.log("pass:" + result[0].pass);
     // }
-    if(result[0].pass !== null && req.cookies[nameCode] !== "true"){
+    // console.log("mat khau: " + result[0].pass);
+    if((result[0].pass != null) && req.cookies[nameCode] !== "true"){
       return res.render('xuli',{nameCode: nameCode});
     }
     return res.render('coding',{data:result,user:req.cookies.name});
