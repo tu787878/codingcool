@@ -682,12 +682,18 @@ socket.emit('join',{id:<%=data[0].id%>,ten:'<%=user%>'});
 editor.setTheme("ace/theme/dracula");
   editor.getSession().on('change', function () {
     if (silent) return "d";
+   
+    var data = editor.getSession().getValue();
+    var ll = $("#lang").val();
+    // console.log(ll);
+    // var currline = editor.getSelectionRange().start.row;
+    var currline = editor.getCursorPosition()
+    console.log(currline.column+1);
     editor.find(userLast);
     editor.replace("");
-    var data = editor.getSession().getValue();
-    var ll = $('#lang').val();
-    
-    socket.emit('haha', {id: <%=data[0].id%>,data: data,user:'<%=user%>',lang: ll});
+    editor.getSession().getSelection().selectionLead.setPosition(currline.row, currline.column);
+    socket.emit('haha', {id: <%=data[0].id%>,data: data,user:'<%=user%>',lang: ll, line:currline.row});
+
 
 });
 $("#lang").val("<%=data[0].lang%>");
@@ -696,6 +702,14 @@ $( "#lang" )
     var value = $(this).val();
   
     editor.getSession().setMode("ace/mode/" + value);
+    var data = editor.getSession().getValue();
+    // console.log(value);
+    socket.emit('lang', {
+                           id: <%=data[0].id%>,
+                           data: data,
+                           user:'<%=user%>',
+                           lang: value
+                      });
   })
   .change();
 $( "#size" )
@@ -750,8 +764,11 @@ socket.on('nes', data => {
  silent = true;
  userLast = "\n " + cmt + data.name + " is coding..." + cmt2;
  editor.getSession().setValue(data.dt.data + userLast);
- editor.$blockScrolling = 1;
- silent = false;
+ editor.$blockScrolling =1;
+ console.log(data.line+1)
+//  editor.renderer.scrollCursorIntoView({row: data.line, column: 1}, 0.5)
+editor.getSession().getSelection().selectionLead.setPosition(data.line,3);
+silent = false
  var x = document.getElementById("myAudio"); 
     function playAudio() { 
       x.play(); 

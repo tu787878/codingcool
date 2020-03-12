@@ -320,9 +320,14 @@ io.on('connection', socket => {
       // socket.broadcast.to(room).emit('add',{user:data.user,allUser:allUser});
     });
     socket.on('haha', (data) => {
-      fullData = {dt: data, name: data.user};
+      console.log(data.line)
+      fullData = {dt: data, name: data.user, line:data.line};
       updateDataCode(data.id, data.data, data.lang);
       socket.broadcast.to(room).emit('nes',fullData);
+      // socket.broadcast.emit('nes',fullData);
+    });
+    socket.on('lang', (data) => {
+      updateDataCode(data.id, data.data, data.lang);
       // socket.broadcast.emit('nes',fullData);
     });
     socket.on('NGUOI_DUNG_DANG_KY', user => {
