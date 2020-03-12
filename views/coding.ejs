@@ -2,7 +2,7 @@
 <html>
 <header>
 <!-- <link rel="stylesheet" href="prism.css"> -->
-
+<title>CodingCool</title>
 <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.6/angular.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.4/socket.io.js"></script>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
@@ -137,7 +137,7 @@ html, body, div, span, applet, object, iframe, p, blockquote, pre, a, abbr, acro
 
 html { overflow: auto; }
 body {
-  background-color: #dbe1ed;
+  background-color: #e9e9e9;
   font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
   font-size: 62.5%;
   line-height: 1;
@@ -530,13 +530,13 @@ p {
       <option value="50">50</option>
     </select>
     <select id="them" class="size-select">
-      <option value="dracula">dracula</option>
+      <option value="ambiance">ambiance</option>
       <option value="chaos">chaos</option>
       <option value="chrome">chrome</option>
       <option value="clouds">clouds</option>
       <option value="cobalt">cobalt</option>
       <option value="dawn">dawn</option>
-      <option value="ambiance">ambiance</option>
+      <option value="dracula">dracula</option>
       <option value="dreamweaver">dreamweaver</option>
       <option value="eclipse">eclipse</option>
       <option value="github">github</option>
@@ -666,9 +666,9 @@ function myFunctionCopy() {
   window.prompt("Copy to clipboard and share: Ctrl+C, Enter", copyText);
 }
 $( "#audiox" ).click(function() {
-        localStream.getAudioTracks()[0].stop(); 
-        $(this).attr("id","audioy");
-      });
+  localStream.getAudioTracks()[0].stop(); 
+  // $(this).attr("id","audioy");
+});
 var silent = false;
 // var socket = io("https://vantuproject.herokuapp.com/");
 //var socket = io("localhost:3000");
@@ -691,7 +691,7 @@ editor.setTheme("ace/theme/dracula");
     // console.log(ll);
     // var currline = editor.getSelectionRange().start.row;
     var currline = editor.getCursorPosition()
-    console.log(currline.column+1);
+    // console.log(currline.column+1);
     editor.find(userLast);
     editor.replace("");
     editor.getSession().getSelection().selectionLead.setPosition(currline.row, currline.column);
@@ -772,7 +772,7 @@ socket.on('nes', data => {
  userLast = "\n " + cmt + data.name + " is coding..." + cmt2;
  editor.getSession().setValue(data.dt.data + userLast);
  editor.$blockScrolling =1;
- console.log(data.line+1)
+//  console.log(data.line+1)
 //  editor.renderer.scrollCursorIntoView({row: data.line, column: 1}, 0.5)
 editor.getSession().getSelection().selectionLead.setPosition(data.line,3);
 silent = false
