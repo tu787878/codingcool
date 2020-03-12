@@ -33,18 +33,18 @@ server.listen(process.env.PORT || 3000);
 //***********User*******//
 var mysql = require('mysql');
 
-// var db = mysql.createConnection({
-//   host: "localhost",
-//   user: "root",
-//   password: "",
-//   database: "dbs314838"
-// });
 var db = mysql.createConnection({
-  host: "sql2.freemysqlhosting.net",
-  user: "sql2327076",
-  password: "qJ4%pB7%",
-  database: "sql2327076"
+  host: "localhost",
+  user: "root",
+  password: "",
+  database: "dbs314838"
 });
+// var db = mysql.createConnection({
+//   host: "sql2.freemysqlhosting.net",
+//   user: "sql2327076",
+//   password: "qJ4%pB7%",
+//   database: "sql2327076"
+// });
 
 function createNewCode(name, pass, member, lang){
     // console.log("Connected!");
@@ -186,6 +186,13 @@ function updatePassCode(nameCode, pass){
     // console.log(result);
 });
 }
+function updateViewsCode(nameCode, views){
+  var sql = "UPDATE dataCode set views =?  WHERE nameCode = ?";
+  var query = db.query(sql, [views, nameCode], function(err, result) {
+    console.log("Record-4 Updated!!");
+    // console.log(result);
+});
+}
 //**********Route**********//
 
 app.get('/', (req,res) => {
@@ -277,7 +284,7 @@ app.get('/:nameCode', (req,res) => {
   var nameCode = req.params.nameCode;
   getDataCode(nameCode).then(function(result){
     // console.log(result.length);
-
+    
     if(result.length == 0){
       let pass = '';
       let member = 5;
@@ -285,6 +292,9 @@ app.get('/:nameCode', (req,res) => {
       createNewCode(nameCode, pass, member, lang);
       // console.log("thanh cong");
       return res.redirect('/' + nameCode);
+    }else {
+      let views = result[0].views + 1;
+      updateViewsCode(nameCode,views);
     }
 
     if((result[0].passWord != "") && req.cookies[nameCode] !== "true"){
