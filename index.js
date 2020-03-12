@@ -304,7 +304,7 @@ app.post('/testPass/:nameCode', (req,res) => {
 var allUser = [];
 const arrUserInfo = [];
 
-//**********Videocall**********//
+//**********socketio**********//
 
 io.on('connection', socket => {
   
