@@ -35,7 +35,7 @@ var mysql = require('mysql');
 
 // var db = mysql.createConnection({
 //   host: "localhost",
-//     user: "root",
+//   user: "root",
 //   password: "",
 //   database: "dbs314838"
 // });
@@ -45,20 +45,108 @@ var db = mysql.createConnection({
   password: "qJ4%pB7%",
   database: "sql2327076"
 });
-function createDataCode(name, pass,member){
-	return db.connect(function(err) {
-  if (err) return err;
-  console.log("Connected!");
-  var sql = "INSERT INTO dataCode (nameCode, data, passWord, member) VALUES (?, ?, ?, ?)";
-  return db.query(sql,[name,"//Hello World!",pass,member], function (err, result) {
-    if (err) throw err;
-    console.log("1 record inserted");
-    result = JSON.parse(JSON.stringify(result));
-    // console.log(result.insertId);
-    return result.insertId;
-  });
-});
-};
+
+function createNewCode(name, pass, member, lang){
+    // console.log("Connected!");
+    var sql = "INSERT INTO dataCode (nameCode, data, passWord, member, lang) VALUES (?, ?, ?, ?, ?)";
+    var helloworld = "";
+    switch (lang) {
+      case "c_cpp": helloworld = "#include <iostream>\n\
+  using namespace std;\n \
+   \n\
+  int main()\n\
+  {\n\
+    cout << 'Hello World' << endl;\n\
+   \n\
+    cin.get();\n\
+    return 0;\n\
+  }";
+        break;
+      case "csharp": helloworld = "// A Hello World! program in C#.\n\
+  using System;\n\
+  namespace HelloWorld\n\
+  {\n\
+      class Hello \n\
+      {\n\
+          static void Main() \n\
+          {\n\
+              Console.WriteLine('Hello World!');\n\
+  \n\
+              // Keep the console window open in debug mode.\n\
+              Console.WriteLine('Press any key to exit.');\n\
+              Console.ReadKey();\n\
+          }\n\
+      }\n\
+  }\n";
+          break;
+        case "python": helloworld = "# This program prints Hello, world!\n\
+  \n\
+  print('Hello, world!')\n";
+          break;
+        case "html": helloworld = "<html>\n\
+  <header><title>This is title</title></header>\n\
+  <body>\n\
+  Hello world\n\
+  </body>\n\
+  </html>\n";
+          break;
+        case "css": helloworld = "<style type='text/css'>\n\
+  h1 {\n\
+          color: DeepSkyBlue;\n\
+  }\n\
+  </style>\n\
+  \n\
+  <h1>Hello, world!</h1>\n";
+          break;
+        case "javascript": helloworld = "<!DOCTYPE HTML>\n\
+  <html>\n\
+  \n\
+  <body>\n\
+  \n\
+    <p>Before the script...</p>\n\
+  \n\
+    <script>\n\
+      alert( 'Hello, world!' );\n\
+    </script>\n\
+  \n\
+    <p>...After the script.</p>\n\
+  \n\
+  </body>\n\
+  \n\
+  </html>\n";
+  break;
+  case "java": helloworld = "public class HelloWorld {\n\
+  \n\
+      public static void main(String[] args) {\n\
+          // Prints 'Hello, World' to the terminal window.\n\
+          System.out.println('Hello, World');\n\
+      }\n\
+  \n\
+  }\n";
+  break;
+  case "php": helloworld = "<html>\n\
+   <head>\n\
+    <title>PHP Test</title>\n\
+   </head>\n\
+   <body>\n\
+   <?php echo '<p>Hello World</p>'; ?>\n \
+   </body>\n\
+  </html>\n";
+  break;
+    }
+    db.query(sql,[name,helloworld,pass,member,lang], function (err, result) {
+      if (err) {
+        // console.log(err);
+        return false;
+      }
+      else{
+        // console.log("1 record inserted");
+        return "ok"; 
+      } 
+      // 
+    });
+
+}
 // createDataCode("dsdada", "dsadadad","dấdas");
 function updateDataCode(id, data,lang){
   var sql = "UPDATE dataCode set data =?  WHERE id = ?";
@@ -71,176 +159,92 @@ var query2 = db.query(sql2, [lang, id], (err, result) => {
     console.log("Record-2 Updated!!");
 });
 };
-function getDataCode(id, socket){
-  var res;
-  var sql = "SELECT * FROM dataCode WHERE id = ?";
-  var query = db.query(sql,[id], (err, result) => {
+function getDataCode(nameCode){
+  var sql = "SELECT * FROM dataCode WHERE nameCode = ?";
+  var query = db.query(sql,[nameCode], (err, result) => {
     if(err) return console.error(err);
-    // console.log(result);
     result = JSON.parse(JSON.stringify(result));
-    socket.emit('dataOld',result);
+    return result;
   });
 }
-
+function makeNameCode(length) {
+  var result           = '';
+  var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+  var charactersLength = characters.length;
+  for ( var i = 0; i < length; i++ ) {
+     result += characters.charAt(Math.floor(Math.random() * charactersLength));
+  }
+  return result;
+}
 
 //**********Route**********//
 
 app.get('/', (req,res) => {
   // res.cookie('name','tudaica').send('dsdamalkll');
-  console.log(req.cookies.name);
-  if(req.cookies.name) return res.render('homePage',{user:req.cookies.name});
-  res.render('resiter',{id:0});
+  // console.log(req.cookies.name);
+  var nameCode;
+  var out = false;
+  if(req.cookies.name){
+    while(!out){
+      nameCode = makeNameCode(8);
+      let pass = "";
+      let member = 5;
+      let lang = "c_cpp";
+      createNewCode(nameCode, pass, member, lang);
+      out = true;
+      let sql = "SELECT * FROM dataCode WHERE nameCode = ?";
+      let query = db.query(sql,[nameCode], (err, result) => {
+        if(err) return console.error(err);
+        result = JSON.parse(JSON.stringify(result));
+        // console.log(result.length);
+        if(result.length == 0){
+          out = false;
+        }
+       });
+    }
+    return res.redirect('/'+ nameCode);
+  }else
+    return res.render('resiter',{nameCode:0});
 });
+
+
 app.post('/',(req,res) => {
-  console.log(req.body.name);
+  // console.log(req.body.name);
+  var nameCode;
   var userName = req.body.name;
   res.cookie('name',userName);
-  if(req.body.id != 0) return res.redirect('/coding/'+ req.body.id);
-  res.render('homePage',{user:userName});
+  if(req.body.nameCode != 0) return res.redirect('/'+ req.body.nameCode);
+    while(!out){
+      nameCode = makeNameCode(6);
+      let pass = "";
+      let member = 5;
+      let lang = "c_cpp";
+      createNewCode(nameCode, pass, member, lang);
+      out = true;
+      let sql = "SELECT * FROM dataCode WHERE nameCode = ?";
+      let query = db.query(sql,[nameCode], (err, result) => {
+        if(err) return console.error(err);
+        result = JSON.parse(JSON.stringify(result));
+        // console.log(result.length);
+        if(result.length == 0){
+          out = false;
+        }
+       });
+  }
+    return res.redirect('/'+ nameCode);
 });
-app.get('/newCode', (req,res) => {
-  res.render('newCode', {user:req.cookies.name});
-});
+
+//*******CAn viet them************* */
 app.post('/newCode', (req,res) => {
   var name = req.body.name;
   var pass = req.body.pass;
   var member = req.body.mem;
   var lang = req.body.lang;
 
-	db.connect(function(err) {
-  if (err) return err;
-  console.log("Connected!");
-  var sql = "INSERT INTO dataCode (nameCode, data, passWord, member, lang) VALUES (?, ?, ?, ?, ?)";
-  var helloworld = "";
-  switch (lang) {
-    case "c_cpp": helloworld = "#include <iostream>\n\
-using namespace std;\n \
- \n\
-int main()\n\
-{\n\
-	cout << 'Hello World' << endl;\n\
- \n\
-	cin.get();\n\
-	return 0;\n\
-}";
-      break;
-    case "csharp": helloworld = "// A Hello World! program in C#.\n\
-using System;\n\
-namespace HelloWorld\n\
-{\n\
-    class Hello \n\
-    {\n\
-        static void Main() \n\
-        {\n\
-            Console.WriteLine('Hello World!');\n\
-\n\
-            // Keep the console window open in debug mode.\n\
-            Console.WriteLine('Press any key to exit.');\n\
-            Console.ReadKey();\n\
-        }\n\
-    }\n\
-}\n";
-        break;
-      case "python": helloworld = "# This program prints Hello, world!\n\
-\n\
-print('Hello, world!')\n";
-        break;
-      case "html": helloworld = "<html>\n\
-<header><title>This is title</title></header>\n\
-<body>\n\
-Hello world\n\
-</body>\n\
-</html>\n";
-        break;
-      case "css": helloworld = "<style type='text/css'>\n\
-h1 {\n\
-        color: DeepSkyBlue;\n\
-}\n\
-</style>\n\
-\n\
-<h1>Hello, world!</h1>\n";
-        break;
-      case "javascript": helloworld = "<!DOCTYPE HTML>\n\
-<html>\n\
-\n\
-<body>\n\
-\n\
-  <p>Before the script...</p>\n\
-\n\
-  <script>\n\
-    alert( 'Hello, world!' );\n\
-  </script>\n\
-\n\
-  <p>...After the script.</p>\n\
-\n\
-</body>\n\
-\n\
-</html>\n";
-break;
-case "java": helloworld = "public class HelloWorld {\n\
-\n\
-    public static void main(String[] args) {\n\
-        // Prints 'Hello, World' to the terminal window.\n\
-        System.out.println('Hello, World');\n\
-    }\n\
-\n\
-}\n";
-break;
-case "php": helloworld = "<html>\n\
- <head>\n\
-  <title>PHP Test</title>\n\
- </head>\n\
- <body>\n\
- <?php echo '<p>Hello World</p>'; ?>\n \
- </body>\n\
-</html>\n";
-break;
-  }
-  return db.query(sql,[name,helloworld,pass,member,lang], function (err, result) {
-    if (err) throw err;
-    console.log("1 record inserted");
-    result = JSON.parse(JSON.stringify(result));
-    // console.log(result.insertId);
-    var id = result.insertId;
-    console.log(id);
-    res.redirect('/coding/' + id);
-    });
-  });
+  createNewCode(name, pass, member, lang);
+
 });
-app.get('/coding/:id', (req,res) => {
-  if(!req.cookies.name) return res.render('resiter', {id:req.params.id});
-  tam = false;
-  if(tam){
-    return res.render('xuli',{id: req.params.id});
-  }
-  var sql = "SELECT * FROM dataCode WHERE id = ?";
-  var id = req.params.id;
-  var query = db.query(sql,[id], (err, result) => {
-    if(err) return console.error(err);
-    // console.log(result);
-    result = JSON.parse(JSON.stringify(result));
-    console.log(result);
-    res.render('coding',{data:result,user:req.cookies.name});
-    tam=true;
-  });
-});
-app.post('/coding/:id', (req,res) => {
-  var pass = req.body.pass;
-  var sql = "SELECT passWord FROM dataCode WHERE id = ?";
-  var id = req.params.id;
-  var query = db.query(sql,[id], (err, result) => {
-    if(err) return console.error(err);
-    // console.log(result);
-    result = JSON.parse(JSON.stringify(result));
-    var hihi = result[0].passWord;
-    console.log(hihi);
-    if(hihi === pass){
-      tam = false;
-      return res.redirect('/coding/'+ id);
-    }
-    return res.redirect('/false');
-  });
-});
+
 app.get('/false', (req, res) => {
   res.render('sai');
 });
@@ -248,6 +252,52 @@ app.get('/find',(req,res) => {
   res.render('find');
 })
 
+
+//***********nang cap *********/
+app.get('/:nameCode', (req,res) => {
+  if(!req.cookies.name) return res.render('resiter', {id:req.params.id});
+  var nameCode = req.params.nameCode;
+  var sql = "SELECT * FROM dataCode WHERE nameCode = ?";
+  var query = db.query(sql,[nameCode], (err, result) => {
+    if(err) return console.error(err);
+    result = JSON.parse(JSON.stringify(result));
+    console.log(result);
+    if(result.length == 0){
+      let pass = "";
+      let member = 5;
+      let lang = "c_cpp";
+      createNewCode(nameCode, pass, member, lang);
+      console.log("thanh cong");
+      return res.redirect('/' + nameCode);
+    }
+    
+    // if(result[0].pass !== null){
+    //   console.log("pass:" + result[0].pass);
+    // }
+    if(result[0].pass !== null && req.cookies[nameCode] !== "true"){
+      return res.render('xuli',{nameCode: nameCode});
+    }
+    return res.render('coding',{data:result,user:req.cookies.name});
+  });
+});
+//**********Xu ly mat khau */
+app.post('/testPass/:nameCode', (req,res) => {
+  var pass = req.body.pass;
+  var sql = "SELECT passWord FROM dataCode WHERE nameCode = ?";
+  var nameCode = req.params.nameCode;
+  var query = db.query(sql,[nameCode], (err, result) => {
+    if(err) return console.error(err);
+    // console.log(result);
+    result = JSON.parse(JSON.stringify(result));
+    var hihi = result[0].passWord;
+    // console.log(hihi);
+    if(hihi === pass){
+      res.cookie(nameCode,"true");
+      return res.redirect('/'+ nameCode);
+    }
+    return res.redirect('/false');
+  });
+});
 
 
 var allUser = [];
@@ -286,30 +336,3 @@ io.on('connection', socket => {
 
 });
 ///////////TURN SERRVER//////////////////////
-// Node Get ICE STUN and TURN list
-let o = {
-  format: "urls"
-};
-
-let bodyString = JSON.stringify(o);
-let https = require("https");
-let options = {
-  host: "global.xirsys.net",
-  path: "/_turn/codingcool",
-  method: "PUT",
-  headers: {
-      "Authorization": "Basic " + Buffer.from("tu787878:a2979bb2-63d7-11ea-8b07-0242ac110004").toString("base64"),
-      "Content-Type": "application/json",
-      "Content-Length": bodyString.length
-  }
-};
-let httpreq = https.request(options, function(httpres) {
-  let str = "";
-  httpres.on("data", function(data){ str += data; });
-  httpres.on("error", function(e){ console.log("error: ",e); });
-  httpres.on("end", function(){ 
-      console.log("ICE List: ", str);
-  });
-});
-httpreq.on("error", function(e){ console.log("request error: ",e); });
-httpreq.end();
