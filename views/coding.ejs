@@ -557,13 +557,16 @@ p {
     </select>
     <!-- <div class="btn-group" id="btnAction"> -->
      <a href="/"> <button id="newNote" type="button" class="btn btn-primary"> <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>New Note</button></a>
+    
      <button id="url" type="button" onclick="myFunctionCopy()" class="btn btn-primary"><span class="glyphicon glyphicon-share" aria-hidden="true"></span>Share Url</button>
-     <a href="/blog"></a> <button id="blog" type="button" class="btn btn-primary"><span class="glyphicon glyphicon-heart" aria-hidden="true"></span>Blog</button></a>
+     <a href="/blog"> <button id="blog" type="button" class="btn btn-primary"><span class="glyphicon glyphicon-heart" aria-hidden="true"></span>Blog</button></a>
     <!-- </div> -->
   
   </div>
-  <%if (data[0].pass == '' || data[0].pass == null) { %>
-    <p id="time" class="text-right font-italic text-warning"><code>*Your note will be deleted after 6 months if not set password</code><a href=""> Set Password</a></p>
+  <%if (data[0].passWord == '' || data[0].passWord == null) { %>
+    <p id="time" class="text-right font-italic text-warning"><code>*Your note will be deleted after 1 months if not set password</code><a id="modall" href="#"> Set Password</a></p>
+  <% } else { %>
+    <p id="time" class="text-right font-italic text-warning"><code>*Your note will be deleted after 6 months.Your password: </code><%=data[0].passWord%></p>
   <% } %>
   
   
@@ -726,6 +729,10 @@ $( "#them" )
         editor.setTheme("ace/theme/" + value);
       })
       .change();
+
+$("#modall").on('click',function(){
+  $('#exampleModal').modal('show')
+})
 // socket.on('dataOld', old => {
 //   silent = true;
 //   console.log(old[0].data);
@@ -792,7 +799,31 @@ function searchToggle(obj, evt){
             }
         }
 </script>
-
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">New message</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form action = "/setPassword/<%=data[0].nameCode%>" method = "POST">
+          <div class="form-group">
+            <label for="message-text" class="col-form-label">password:</label>
+            <input type = "text" name = "pass" class="form-control" id="message-text"></input>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <input type="submit" class="btn btn-primary" value="Save">
+          </div>
+        </form>
+      </div>
+      
+    </div>
+  </div>
+</div>
 
 <!-- <script src="prism.js" charset="utf-8"></script> -->
 

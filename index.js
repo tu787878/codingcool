@@ -4,7 +4,7 @@ var io = require("socket.io")(server);
 var session = require("express-session");
 var bodyParser = require('body-parser');
 var cookieParser = require('cookie-parser');
-
+var Promise = require('promise');
 var tam = true;
 
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -161,11 +161,14 @@ var query2 = db.query(sql2, [lang, id], (err, result) => {
 };
 function getDataCode(nameCode){
   var sql = "SELECT * FROM dataCode WHERE nameCode = ?";
-  var query = db.query(sql,[nameCode], (err, result) => {
-    if(err) return console.error(err);
-    result = JSON.parse(JSON.stringify(result));
-    return result;
-  });
+
+  return new Promise((resolve, reject) => {
+    db.query(sql,[nameCode], (err,result) => {
+        if(err) reject(err);
+        resolve(JSON.parse(JSON.stringify(result)));
+      // console.log(result)
+    });
+})
 }
 function makeNameCode(length) {
   var result           = '';
@@ -176,7 +179,13 @@ function makeNameCode(length) {
   }
   return result;
 }
-
+function updatePassCode(nameCode, pass){
+  var sql = "UPDATE dataCode set passWord =?  WHERE nameCode = ?";
+  var query = db.query(sql, [pass, nameCode], function(err, result) {
+    console.log("Record-3 Updated!!");
+    // console.log(result);
+});
+}
 //**********Route**********//
 
 app.get('/', (req,res) => {
@@ -234,6 +243,15 @@ app.post('/',(req,res) => {
     return res.redirect('/'+ nameCode);
 });
 
+app.post('/setPassword/:nameCode',(req,res) => {
+  var pass = req.body.pass;
+  var nameCode = req.params.nameCode;
+  console.log("pass: " + pass)
+  console.log("code: " + nameCode)
+
+  updatePassCode(nameCode,pass);
+  return res.redirect('/' + nameCode);
+});
 //*******CAn viet them************* */
 app.post('/newCode', (req,res) => {
   var name = req.body.name;
@@ -257,11 +275,9 @@ app.get('/find',(req,res) => {
 app.get('/:nameCode', (req,res) => {
   if(!req.cookies.name) return res.render('resiter', {id:req.params.id});
   var nameCode = req.params.nameCode;
-  var sql = "SELECT * FROM dataCode WHERE nameCode = ?";
-  var query = db.query(sql,[nameCode], (err, result) => {
-    if(err) return console.error(err);
-    result = JSON.parse(JSON.stringify(result));
-    // console.log(result);
+  getDataCode(nameCode).then(function(result){
+    // console.log(result.length);
+
     if(result.length == 0){
       let pass = '';
       let member = 5;
@@ -270,16 +286,13 @@ app.get('/:nameCode', (req,res) => {
       // console.log("thanh cong");
       return res.redirect('/' + nameCode);
     }
-    
-    // if(result[0].pass !== null){
-    //   console.log("pass:" + result[0].pass);
-    // }
-    // console.log("mat khau: " + result[0].pass);
-    if((result[0].pass != null) && req.cookies[nameCode] !== "true"){
+
+    if((result[0].passWord != "") && req.cookies[nameCode] !== "true"){
       return res.render('xuli',{nameCode: nameCode});
     }
     return res.render('coding',{data:result,user:req.cookies.name});
-  });
+  })
+    
 });
 //**********Xu ly mat khau */
 app.post('/testPass/:nameCode', (req,res) => {
@@ -309,10 +322,10 @@ const arrUserInfo = [];
 io.on('connection', socket => {
   
     var room = "";
-		console.log(socket.id);
+		// console.log(socket.id);
     // getDataCode(1,socket);
     socket.on('join',data => {
-      console.log(data.id);
+      // console.log(data.id);
       room ='Room' + data.id;
       socket.join(room);
       // socket.user = data.user;
