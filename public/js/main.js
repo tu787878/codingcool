@@ -1,5 +1,5 @@
-const socket = io('localhost:3000');
-// var socket = io("https://vantuproject.herokuapp.com/");
+// const socket = io('localhost:3000');
+var socket = io("https://vantuproject.herokuapp.com/");
 $('#div-chat').hide();
 
 let customConfig;
