@@ -170,6 +170,17 @@ function getDataCode(nameCode){
     });
 })
 }
+function getDataUser(user){
+  var sql = "SELECT soluong FROM datauser WHERE nameOfType = ?";
+
+  return new Promise((resolve, reject) => {
+    db.query(sql,[user], (err,result) => {
+        if(err) reject(err);
+        resolve(JSON.parse(JSON.stringify(result)));
+      // console.log(result)
+    });
+})
+}
 function makeNameCode(length) {
   var result           = '';
   var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
@@ -180,16 +191,23 @@ function makeNameCode(length) {
   return result;
 }
 function updatePassCode(nameCode, pass){
-  var sql = "UPDATE dataCode set passWord =?  WHERE nameCode = ?";
+  var sql = "UPDATE dataCode set passWord = ?  WHERE nameCode = ?";
   var query = db.query(sql, [pass, nameCode], function(err, result) {
     console.log("Record-3 Updated!!");
     // console.log(result);
 });
 }
 function updateViewsCode(nameCode, views){
-  var sql = "UPDATE dataCode set views =?  WHERE nameCode = ?";
+  var sql = "UPDATE dataCode set views = ?  WHERE nameCode = ?";
   var query = db.query(sql, [views, nameCode], function(err, result) {
     console.log("Record-4 Updated!!");
+    // console.log(result);
+});
+}
+function updateViewsUser(user, views){
+  var sql = "UPDATE datauser set soluong = ?  WHERE nameOfType = ?";
+  var query = db.query(sql, [views, user], function(err, result) {
+    console.log("Record-5 Updated!!");
     // console.log(result);
 });
 }
@@ -283,6 +301,10 @@ app.get('/find',(req,res) => {
 app.get('/:nameCode', (req,res) => {
   if(!req.cookies.name) return res.render('resiter', {id:req.params.id});
   var nameCode = req.params.nameCode;
+  getDataUser("user").then(function(result){
+    let soluong = result[0].soluong + 1;
+    updateViewsUser("user",soluong);
+  })
   getDataCode(nameCode).then(function(result){
     // console.log(result.length);
     
@@ -324,7 +346,13 @@ app.post('/testPass/:nameCode', (req,res) => {
   });
 });
 
+app.post('/newUsername/:nameCode', (req,res) => {
+  var username = req.body.newUsername;
+  var nameCode = req.params.nameCode;
+  res.cookie('name',username);
+  return res.redirect('/'+ nameCode);
 
+});
 var allUser = [];
 const arrUserInfo = [];
 
