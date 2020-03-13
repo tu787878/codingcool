@@ -299,7 +299,7 @@ app.get('/find',(req,res) => {
 
 //***********nang cap *********/
 app.get('/:nameCode', (req,res) => {
-  if(!req.cookies.name) return res.render('resiter', {id:req.params.id});
+  if(!req.cookies.name) return res.render('resiter', {nameCode:nameCode});
   var nameCode = req.params.nameCode;
   getDataUser("user").then(function(result){
     let soluong = result[0].soluong + 1;
