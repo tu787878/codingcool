@@ -227,6 +227,7 @@ app.get('/', (req,res) => {
 app.post('/',(req,res) => {
   // console.log(req.body.name);
   var nameCode;
+  var out = false;
   var userName = req.body.name;
   res.cookie('name',userName);
   if(req.body.nameCode != 0) return res.redirect('/'+ req.body.nameCode);
