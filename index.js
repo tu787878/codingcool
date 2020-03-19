@@ -40,10 +40,10 @@ var mysql = require('mysql');
 //   database: "dbs314838"
 // });
 var db = mysql.createConnection({
-  host: "remotemysql.com",
-  user: "Yz2XOD42sX",
-  password: "AJLdJqcK3J",
-  database: "Yz2XOD42sX"
+  host: "db786967444.hosting-data.io",
+  user: "dbo786967444",
+  password: "Tu@221477316",
+  database: "db786967444"
 });
 
 function createNewCode(name, pass, member, lang){
