@@ -50,7 +50,6 @@ function playStream(idVideoTag, stream) {
     audio.play();
 }
 function playStream2(stream) {
-  
     const audio = document.getElementById('myLocalVideo');
     audio.srcObject = stream;
     audio.play();

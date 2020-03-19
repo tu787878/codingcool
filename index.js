@@ -40,10 +40,10 @@ var mysql = require('mysql');
 //   database: "dbs314838"
 // });
 var db = mysql.createConnection({
-  host: "sql2.freemysqlhosting.net",
-  user: "sql2327076",
-  password: "qJ4%pB7%",
-  database: "sql2327076"
+  host: "remotemysql.com",
+  user: "Yz2XOD42sX",
+  password: "AJLdJqcK3J",
+  database: "Yz2XOD42sX"
 });
 
 function createNewCode(name, pass, member, lang){
@@ -314,7 +314,6 @@ app.get('/:nameCode', (req,res) => {
       let member = 5;
       let lang = "c_cpp";
       createNewCode(nameCode, pass, member, lang);
-      // console.log("thanh cong");
       return res.redirect('/' + nameCode);
     }else {
       let views = result[0].views + 1;
@@ -324,6 +323,8 @@ app.get('/:nameCode', (req,res) => {
     if((result[0].passWord != "") && req.cookies[nameCode] !== "true"){
       return res.render('xuli',{nameCode: nameCode});
     }
+    console.log("thanh cong");
+
     return res.render('coding',{data:result,user:req.cookies.name});
   })
     
