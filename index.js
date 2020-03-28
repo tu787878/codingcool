@@ -40,7 +40,7 @@ var mysql = require('mysql');
 //   database: "dbs314838"
 // });
 var db = mysql.createConnection({
-  host: "localhost",
+  host: "ecoder.herokuapp.com",
   user: "imakerv3_vantu",
   password: "Tu221477316",
   database: "imakerv3_vantu"
