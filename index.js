@@ -40,6 +40,7 @@ var mysql = require('mysql');
 //   database: "dbs314838"
 // });
 var db = mysql.createConnection({
+  
   host: "45.252.248.51",
   user: "imakerv3_vantu",
   password: "Tu221477316",
