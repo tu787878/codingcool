@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Máy chủ: 127.0.0.1
--- Thời gian đã tạo: Th3 19, 2020 lúc 07:11 AM
+-- Thời gian đã tạo: Th3 28, 2020 lúc 08:32 PM
 -- Phiên bản máy phục vụ: 10.1.37-MariaDB
 -- Phiên bản PHP: 7.3.0
 
@@ -62,7 +62,7 @@ INSERT INTO `datacode` (`id`, `nameCode`, `data`, `passWord`, `member`, `lang`, 
 (20, 'abcdfeghiklmnop', '#include <iostream>\n  using namespace std;\n    \n  int main()\n  {\n    cout << \'Hello World\' << endl;\n   \n    cin.get();\n    return 0;\n  }', '', 5, 'c_cpp', 0, '2020-03-11 23:00:00'),
 (21, 'abcdfeghiklmsss', '#include <iostream>\n  using namespace std;\n    \n  int main()\n  {\n    cout << \'Hello World\' << endl;\n   \n    cin.get();\n    return 0;\n  }', '', 5, 'c_cpp', 0, '2020-03-11 23:00:00'),
 (22, 'sasasa', '#include <iostream>\n  using namespace std;\n    \n  int main()\n  {\n    cout << \'Hello World\' << endl;\n   \n    cin.get();\n    return 0;\n  }', '', 5, 'c_cpp', 0, '2020-03-11 23:00:00'),
-(23, 'favicon.ico', '#include <iostream>\n  using namespace std;\n    \n  int main()\n  {\n    cout << \'Hello World\' << endl;\n   \n    cin.get();\n    return 0;\n  }', '', 5, 'c_cpp', 120, '2020-03-13 20:14:39'),
+(23, 'favicon.ico', '#include <iostream>\n  using namespace std;\n    \n  int main()\n  {\n    cout << \'Hello World\' << endl;\n   \n    cin.get();\n    return 0;\n  }', '', 5, 'c_cpp', 123, '2020-03-19 06:25:24'),
 (24, 'dePVAigr', '#include <iostream>\n  using namespace std;\n    \n  int main()\n  {\n    cout << \'Hello World\' << endl;\n   \n    cin.get();\n    return 0;\n  }', '', 5, 'c_cpp', 0, '2020-03-11 23:00:00'),
 (25, 'AFJWjTou', '#include <iostream>\n  using namespace std;\n    \n  int main()\n  {\n    cout << \'Hello World\' << endl;\n   \n    cin.get();\n    return 0;\n  }', '', 5, 'c_cpp', 0, '2020-03-11 23:00:00'),
 (26, 'UaLgAOpI', '#include <iostream>\n  using namespace std;\n    \n  int main()\n  {\n    cout << \'Hello World\' << endl;\n   \n    cin.get();\n    return 0;\n  }', '', 5, 'c_cpp', 0, '2020-03-11 23:00:00'),
@@ -99,7 +99,8 @@ INSERT INTO `datacode` (`id`, `nameCode`, `data`, `passWord`, `member`, `lang`, 
 (57, 'jFtJeM', '\n        #include <iostream>\n  using namespace std;\n    \n  int main()\n  {\n    cout << \'Hello World\' << endl;\n   \n    cin.get();\n    return 0;\n  }\n        ', '', 5, 'c_cpp', 1, '2020-03-13 17:25:47'),
 (58, 'tWuYBk', '\n        \n        #include <iostream>\n  using namespace std;\n    \n  int main()\n  {\n    cout << \'Hello World\' << endl;\n   \n    cin.get();\n    return 0;\n  }\n        \n        ', '', 5, 'c_cpp', 2, '2020-03-13 17:40:12'),
 (59, 'ZyIrZK', '#include <iostream>\n  using namespace std;\n    \n  int main()\n  {\n    cout << \'Hello World\' << endl;\n   \n    cin.get();\n    return 0;\n  }', '', 5, 'c_cpp', 2, '2020-03-13 20:12:26'),
-(60, 'vsGZMyEs', '#include <iostream>\n  using namespace std;\n    \n  int main()\n  {\n    cout << \'Hello World\' << endl;\n   \n    cin.get();\n    return 0;\n  }', '', 5, 'c_cpp', 1, '2020-03-13 20:14:34');
+(60, 'vsGZMyEs', '#include <iostream>\n  using namespace std;\n    \n  int main()\n  {\n    cout << \'Hello World\' << endl;\n   \n    cin.get();\n    return 0;\n  }', '', 5, 'c_cpp', 1, '2020-03-13 20:14:34'),
+(61, 'yAiKwIkV', '#include <iostream>\n  using namespace std;\n    \n  int main()\n  {\n    cout << \'Hello World\' << endl;\n   \n    cin.get();\n    return 0;\n  }', '', 5, 'c_cpp', 3, '2020-03-19 06:25:23');
 
 -- --------------------------------------------------------
 
@@ -118,7 +119,7 @@ CREATE TABLE `datauser` (
 --
 
 INSERT INTO `datauser` (`nameOfType`, `soluong`, `timeupdate`) VALUES
-('user', 48, '2020-03-13 20:14:39');
+('user', 54, '2020-03-19 06:25:24');
 
 --
 -- Chỉ mục cho các bảng đã đổ
@@ -139,7 +140,7 @@ ALTER TABLE `datacode`
 -- AUTO_INCREMENT cho bảng `datacode`
 --
 ALTER TABLE `datacode`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=61;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=62;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
