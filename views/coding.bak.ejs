@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html>
+<header>
+<title>CodingCool</title>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.6/angular.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.4/socket.io.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  <script src="/ace-builds/src-noconflict/ace.js" type="text/javascript" charset="utf-8"></script>
+  <script src="https://cdn.jsdelivr.net/npm/peerjs@0.3.20/dist/peer.min.js"></script>
+  <script src="/js/main.js" type="text/javascript"></script>
+  
+  <script>
+    var nameOfUser = '<%=user%>';
+    var localAdress = "http://localhost:3000/";
+    // var localAdress = "https://ecoder.herokuapp.com/";
+  </script>
+  
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <link rel="stylesheet" type="text/css" href="/css/style.css">
+ 
+
+</header>
+<body>
+
+  <!-- End Menu -->
+
+
+
+<!-- <div id="project" class="row panel panel-success alert alert-success">
+  <p><strong> Project: <%=data[0].nameCode%></strong></p>
+</div> -->
+
+<div id="trai" class="row">
+  <div id="logo" class=".text-info">
+    <h4>NOTEPAD ONLINE</h4>
+    <h4>Enjoy with your team!</h4>
+    <p id="time" class="text-right font-italic text-primary"><code class="text-primary">*Change a new username: </code><a id="modall2" href="#"><%=user%></a></p>
+  </div>
+  <div id="sel" class="container text-left">
+    <select id="lang" class="size-select">
+        <option value="c_cpp">C</option>
+        <option value="c_cpp">C++</option>
+        <option value="csharp">C#</option>
+        <option value="python">Python</option>
+        <option value="html">Html</option>
+        <option value="css">Css</option>
+        <option value="javascript">Javascript</option>
+        <option value="java">Java</option>
+        <option value="php">Php</option>
+    </select>
+    <select id="size" class="size-select">
+      <!-- <option value="10">10</option>
+      <option value="12">12</option>
+      <option value="14">14</option> -->
+      <option value="16">16</option>
+      <option value="18">18</option>
+      <option value="20">20</option>
+      <option value="22">22</option>
+      <option value="24">24</option>
+      <option value="26">26</option>
+      <option value="28">28</option>
+      <option value="30">30</option>
+      <option value="32">32</option>
+      <option value="34">34</option>
+      <option value="36">36</option>
+      <option value="38">38</option>
+      <option value="40">40</option>
+      <option value="42">42</option>
+      <option value="44">44</option>
+      <option value="46">46</option>
+      <option value="48">48</option>
+      <option value="50">50</option>
+    </select>
+    <select id="them" class="size-select">
+      <option value="ambiance">ambiance</option>
+      <option value="chaos">chaos</option>
+      <option value="chrome">chrome</option>
+      <option value="clouds">clouds</option>
+      <option value="cobalt">cobalt</option>
+      <option value="dawn">dawn</option>
+      <option value="dracula">dracula</option>
+      <option value="dreamweaver">dreamweaver</option>
+      <option value="eclipse">eclipse</option>
+      <option value="github">github</option>
+      <option value="gob">gob</option>
+      <option value="gruvbox">gruvbox</option>
+      <option value="iplastic">iplastic</option>
+      <option value="katzenmilch">katzenmilch</option>
+      <option value="kuroir">kuroir</option>
+      <option value="merbivore">merbivore</option>
+      <option value="monokai">monokai</option>
+      <option value="terminal">terminal</option>
+      <option value="textmate">textmate</option>
+      <option value="tomorrow">tomorrow</option>
+      <option value="tomorrow_night">tomorrow_night</option>
+      <option value="tomorrow_night_blue">tomorrow_night_blue</option>
+      <option value="twilight">twilight</option>
+      <option value="xcode">xcode</option>
+    </select>
+    <!-- <div class="btn-group" id="btnAction"> -->
+     <a href="/"> <button id="newNote" type="button" class="btn btn-primary"> <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>New Note</button></a>
+    
+     <button id="url" type="button" onclick="myFunctionCopy()" class="btn btn-primary"><span class="glyphicon glyphicon-share" aria-hidden="true"></span>Share Url</button>
+     <a href="/blog"> <button id="blog" type="button" class="btn btn-primary"><span class="glyphicon glyphicon-heart" aria-hidden="true"></span>Blog</button></a>
+    <!-- </div> -->
+  
+  </div>
+  <%if (data[0].passWord == '' || data[0].passWord == null) { %>
+    <p id="time" class="text-right font-italic text-warning"><code>*Your note will be deleted after 1 months if not set password</code><a id="modall" href="#"> Set Password</a></p>
+  <% } else { %>
+    <p id="time" class="text-right font-italic text-warning"><code>*Your note will be deleted after 6 months.Your password: </code><%=data[0].passWord%></p>
+  <% } %>
+  
+  
+  <br>
+  <!-- <div id="chat"> -->
+    <div class="col-2">
+      <div id="editor">
+        <%=data[0].data%>
+        </div>
+    </div>
+</div>
+<button id="audiox" type="button" class="btn btn-primary"><span class="glyphicon glyphicon-volume-off" aria-hidden="true"></span>Micro</button>
+
+<div class="col-4">
+  <div id="chat">
+    <div id="div-chat">
+      <!-- <video class = "videoxxx" id="myLocalVideo" controls></video>  <br /><br /> -->
+    </div>
+  </div>
+</div>
+
+<!-- <div id="chat">
+
+</div> -->
+<!-- <div id="chat">
+  <div class="container" id="nganlai">
+    <p class="datestamp"> 07, 2018, 4:16 AM</p>
+    <div class="bubble">
+    <p>Xin chào mọi người!</p>
+    </div>
+    <div class="bubble bubble-alt green">
+    <p>Hello!1</p>
+    </div>
+    <div class="bubble">
+    <p>Cool, cool.</p>
+    </div>
+    <div class="bubble">
+    <p>Cool, cool.</p>
+    </div>
+    <div class="bubble">
+    <p>Cool, cool.</p>
+    </div>
+    <div class="bubble">
+    <p>Cool, cool.</p>
+    </div>
+    <div class="bubble">
+    <p>Cool, cool.</p>
+    </div>
+    <div class="bubble">
+    <p>Cool, cool.</p>
+    </div>
+    <div class="bubble">
+    <p>Cool, cool.</p>
+    </div>
+    <div class="bubble">
+    <p>Cool, cool.</p>
+    </div>
+    <div class="bubble">
+    <p>Cool, cool.</p>
+    </div>
+    <div class="bubble">
+    <p>Cool, cool.</p>
+    </div>
+    <div class="bubble">
+    <p>Haha hihi</p>
+    </div>
+    <div class="bubble bubble-alt white">
+    <p>Hzzzzzzzzzz</p>
+    </div>
+    <div class="bubble pink">
+    <p>Hello</p>
+    </div>
+    <div class="bubble bubble-alt yellow">
+    <p>hihonsaldnladlkm</p>
+    </div>
+    <div class="bubble bubble-alt red">
+    <p>Tú đc đây</p>
+    </div>
+  </div>
+  <div class="search-wrapper">
+      <div class="input-holder">
+          <input type="text" class="search-input" placeholder="Chat somethinfs -_-" />
+          <button class="search-icon" onclick="searchToggle(this, event);"><span></span></button>
+      </div>
+      <span class="close" onclick="searchToggle(this, event);"></span>
+  </div>
+</div> -->
+
+<audio id="myAudio">
+  <source src="/audio/banphim.mp3" type="audio/mp3">
+  Your browser does not support the audio element.
+</audio>
+<script type="text/javascript">
+function myFunctionCopy() {
+  /* Get the text field */
+  var copyText = localAdress + "<%=data[0].nameCode%>";
+  window.prompt("Copy to clipboard and share: Ctrl+C, Enter", copyText);
+}
+$( "#audiox" ).click(function() {
+  localStream.getAudioTracks()[0].stop(); 
+  // $(this).attr("id","audioy");
+});
+var silent = false;
+// var socket = io("https://vantuproject.herokuapp.com/");
+// var socket = io("localhost:3000");
+var editor = ace.edit("editor");
+var userLast="";
+socket.emit('join',{id:<%=data[0].id%>,ten:'<%=user%>'});
+// socket.on('add',data => {
+//   data.allUser.push(data.user);
+//   console.log(data.allUser);
+//   socket.emit('ok',)
+// });
+// editor.setTheme("ace/theme/vala");
+// editor.getSession().setMode("ace/mode/javascript");
+editor.setTheme("ace/theme/dracula");
+  editor.getSession().on('change', function () {
+    if (silent) return "d";
+    
+    var data = editor.getSession().getValue();
+    var ll = $("#lang").val();
+    // console.log(ll);
+    // var currline = editor.getSelectionRange().start.row;
+    var currline = editor.getCursorPosition()
+    // console.log(currline.column+1);
+    editor.$blockScrolling =Infinity;
+    editor.find(userLast);
+    editor.replace("");
+    // editor.remove(userLast)
+    editor.getSession().getSelection().selectionLead.setPosition(currline.row, currline.column);
+    // editor.scrollToLine(currline.row,true,false);
+    socket.emit('haha', {id: <%=data[0].id%>,data: data,user:'<%=user%>',lang: ll, line:currline.row});
+
+
+});
+$("#lang").val("<%=data[0].lang%>");
+$( "#lang" )
+  .change(function () {
+    var value = $(this).val();
+  
+    editor.getSession().setMode("ace/mode/" + value);
+    var data = editor.getSession().getValue();
+    // console.log(value);
+    socket.emit('lang', {
+                           id: <%=data[0].id%>,
+                           data: data,
+                           user:'<%=user%>',
+                           lang: value
+                      });
+  })
+  .change();
+$( "#size" )
+    .change(function () {
+      var value = $(this).val();
+   
+      document.getElementById('editor').style.fontSize= value + 'px';
+    })
+    .change();
+$( "#them" )
+      .change(function () {
+        var value = $(this).val();
+       
+        editor.setTheme("ace/theme/" + value);
+      })
+      .change();
+
+$("#modall").on('click',function(){
+  $('#exampleModal').modal('show')
+})
+$("#modall2").on('click',function(){
+  $('#exampleModal2').modal('show')
+})
+// socket.on('dataOld', old => {
+//   silent = true;
+//   console.log(old[0].data);
+//   editor.getSession().setValue(old[0].data.data);
+//   silent = false;
+// })
+socket.on('nes', data => {
+
+ var val = $('#lang').val();
+ var cmt = "", cmt2 = "";
+ switch (val) {
+   case "html": cmt = "<!--";
+   cmt2 = "-->";
+     break;
+     case "javascript": cmt = "//";
+     cmt2 = "";
+     break;
+     case "c_cpp"  : cmt = "//";
+     cmt2 = "";
+     break;
+     case "csharp": cmt = "/*";
+     cmt2 = "*/";
+     break;
+     case "java": cmt = "/*";
+     cmt2 = "*/";
+     break;
+     case "php"  : cmt = "//";
+     cmt2 = "";
+     break;
+     case "python"  : cmt = "#";
+     cmt2 = "";
+     break;
+   default:
+
+ }
+ silent = true;
+ userLast = "\n " + cmt + data.name + " is coding..." + cmt2;
+ editor.getSession().setValue(data.dt.data + userLast);
+ editor.$blockScrolling =Infinity;
+//  console.log(data.line+1)
+//  editor.renderer.scrollCursorIntoView({row: data.line, column: 1}, 0.5)
+editor.getSession().getSelection().selectionLead.setPosition(data.line,3);
+silent = false
+ var x = document.getElementById("myAudio"); 
+    function playAudio() { 
+      x.play(); 
+    } 
+    playAudio();
+ // editor.clearSelection();
+});
+function searchToggle(obj, evt){
+            var container = $(obj).closest('.search-wrapper');
+
+            if(!container.hasClass('active')){
+                  container.addClass('active');
+                  evt.preventDefault();
+            }
+            else if(container.hasClass('active') && $(obj).closest('.input-holder').length == 0){
+                  container.removeClass('active');
+                  // clear input
+                  container.find('.search-input').val('');
+                  // clear and hide result container when we press close
+                  container.find('.result-container').fadeOut(100, function(){$(this).empty();});
+            }
+        }
+</script>
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Set password:</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form action = "/setPassword/<%=data[0].nameCode%>" method = "POST">
+          <div class="form-group">
+            <label for="message-text" class="col-form-label">password:</label>
+            <input type = "text" name = "pass" class="form-control" id="message-text"></input>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <input type="submit" class="btn btn-primary" value="Save">
+          </div>
+        </form>
+      </div>
+      
+    </div>
+  </div>
+</div>
+<div class="modal fade" id="exampleModal2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">New username:</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form action = "/newUsername/<%=data[0].nameCode%>" method = "POST">
+          <div class="form-group">
+            <label for="message-text" class="col-form-label">username:</label>
+            <input type = "text" name = "newUsername" class="form-control" id="message-text"></input>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <input type="submit" class="btn btn-primary" value="Save">
+          </div>
+        </form>
+      </div>
+      
+    </div>
+  </div>
+</div>
+
+<!-- <script src="prism.js" charset="utf-8"></script> -->
+
+</body>
+</html>

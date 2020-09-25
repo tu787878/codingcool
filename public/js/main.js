@@ -1,5 +1,5 @@
-// const socket = io('localhost:3000');
-var socket = io("https://ecoder.herokuapp.com/");
+const socket = io('localhost:3000');
+// var socket = io("https://ecoder.herokuapp.com/");
 $('#div-chat').hide();
 
 let customConfig;
@@ -44,10 +44,10 @@ function openStream() {
 }
 
 function playStream(idVideoTag, stream) {
-    $('#div-chat').append('<video class = "videoxxx" id="' + idVideoTag + '" controls></video>  <br /><br />');
-    const audio = document.getElementById(idVideoTag);
-    audio.srcObject = stream;
-    audio.play();
+    // $('#div-chat').append('<video class = "videoxxx" id="' + idVideoTag + '" controls></video>  <br /><br />');
+    // const audio = document.getElementById(idVideoTag);
+    // audio.srcObject = stream;
+    // audio.play();
 }
 function playStream2(stream) {
     const audio = document.getElementById('myLocalVideo');

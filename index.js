@@ -40,12 +40,12 @@ var mysql = require('mysql');
 //   database: "dbs314838"
 // });
 var db = mysql.createConnection({
-  
-  host: "45.252.248.51",
-  user: "imakerv3_vantu",
-  password: "Tu221477316",
-  database: "imakerv3_vantu"
+  host: "localhost",
+  user: "root",
+  password: "",
+  database: "dbs314838"
 });
+
 
 function createNewCode(name, pass, member, lang){
     // console.log("Connected!");
@@ -325,7 +325,6 @@ app.get('/:nameCode', (req,res) => {
       return res.render('xuli',{nameCode: nameCode});
     }
     console.log("thanh cong");
-
     return res.render('coding',{data:result,user:req.cookies.name});
   })
     
@@ -375,7 +374,6 @@ io.on('connection', socket => {
       // socket.broadcast.to(room).emit('add',{user:data.user,allUser:allUser});
     });
     socket.on('haha', (data) => {
-      console.log(data.line)
       fullData = {dt: data, name: data.user, line:data.line};
       updateDataCode(data.id, data.data, data.lang);
       socket.broadcast.to(room).emit('nes',fullData);
