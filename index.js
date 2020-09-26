@@ -49,7 +49,7 @@ var db = mysql.createConnection({
 
 function createNewCode(name, pass, member, lang){
     // console.log("Connected!");
-    var sql = "INSERT INTO dataCode (nameCode, data, passWord, member, lang) VALUES (?, ?, ?, ?, ?)";
+    var sql = "INSERT INTO datacode (nameCode, data, passWord, member, lang) VALUES (?, ?, ?, ?, ?)";
     var helloworld = "";
     switch (lang) {
       case "c_cpp": helloworld = "#include <iostream>\n\
@@ -150,7 +150,7 @@ function createNewCode(name, pass, member, lang){
 }
 // createDataCode("dsdada", "dsadadad","dấdas");
 function updateDataCode(id, data,lang){
-  var sql = "UPDATE dataCode set data =?  WHERE id = ?";
+  var sql = "UPDATE datacode set data =?  WHERE id = ?";
   var sql2 = "UPDATE datacode set lang = ? WHERE id = ?"
   var query = db.query(sql, [data, id], function(err, result) {
     console.log("Record-1 Updated!!");
@@ -161,7 +161,7 @@ var query2 = db.query(sql2, [lang, id], (err, result) => {
 });
 };
 function getDataCode(nameCode){
-  var sql = "SELECT * FROM dataCode WHERE nameCode = ?";
+  var sql = "SELECT * FROM datacode WHERE nameCode = ?";
 
   return new Promise((resolve, reject) => {
     db.query(sql,[nameCode], (err,result) => {
@@ -192,14 +192,14 @@ function makeNameCode(length) {
   return result;
 }
 function updatePassCode(nameCode, pass){
-  var sql = "UPDATE dataCode set passWord = ?  WHERE nameCode = ?";
+  var sql = "UPDATE datacode set passWord = ?  WHERE nameCode = ?";
   var query = db.query(sql, [pass, nameCode], function(err, result) {
     console.log("Record-3 Updated!!");
     // console.log(result);
 });
 }
 function updateViewsCode(nameCode, views){
-  var sql = "UPDATE dataCode set views = ?  WHERE nameCode = ?";
+  var sql = "UPDATE datacode set views = ?  WHERE nameCode = ?";
   var query = db.query(sql, [views, nameCode], function(err, result) {
     console.log("Record-4 Updated!!");
     // console.log(result);
@@ -227,7 +227,7 @@ app.get('/', (req,res) => {
       let lang = "c_cpp";
       createNewCode(nameCode, pass, member, lang);
       out = true;
-      let sql = "SELECT * FROM dataCode WHERE nameCode = ?";
+      let sql = "SELECT * FROM datacode WHERE nameCode = ?";
       let query = db.query(sql,[nameCode], (err, result) => {
         if(err) return console.error(err);
         result = JSON.parse(JSON.stringify(result));
@@ -257,7 +257,7 @@ app.post('/',(req,res) => {
       let lang = "c_cpp";
       createNewCode(nameCode, pass, member, lang);
       out = true;
-      let sql = "SELECT * FROM dataCode WHERE nameCode = ?";
+      let sql = "SELECT * FROM datacode WHERE nameCode = ?";
       let query = db.query(sql,[nameCode], (err, result) => {
         if(err) return console.error(err);
         result = JSON.parse(JSON.stringify(result));
@@ -332,7 +332,7 @@ app.get('/:nameCode', (req,res) => {
 //**********Xu ly mat khau */
 app.post('/testPass/:nameCode', (req,res) => {
   var pass = req.body.pass;
-  var sql = "SELECT passWord FROM dataCode WHERE nameCode = ?";
+  var sql = "SELECT passWord FROM datacode WHERE nameCode = ?";
   var nameCode = req.params.nameCode;
   var query = db.query(sql,[nameCode], (err, result) => {
     if(err) return console.error(err);
