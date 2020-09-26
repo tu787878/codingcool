@@ -21,6 +21,7 @@ socket.on('CO_NGUOI_DUNG_MOI', user => {
     openStream()
         .then(stream => {
             localStream = stream;
+            localStream.getAudioTracks()[0].enabled = false;
         if(test == true){
             // playStream2(stream);
         }
@@ -28,7 +29,10 @@ socket.on('CO_NGUOI_DUNG_MOI', user => {
            
         const call = peer.call(user.peerId, stream);
    
-        call.on('stream', remoteStream => playStream('remoteStream' + user.peerId, remoteStream, user.ten));
+        call.on('stream', remoteStream => {
+            playStream('remoteStream' + user.peerId, remoteStream, user.ten)
+        
+        });
 });
 });
 
@@ -45,11 +49,11 @@ function openStream() {
 }
 
 function playStream(idVideoTag, stream,ten) {
-    $('#div-chat').append('<video class = "videoxxx ' + idVideoTag + '" id = "'+ idVideoTag +'"></video>  <br /><br />');
+    $('#div-chat').append('<video onwaiting="videoPlaying()" class = "videoxxx ' + idVideoTag + '" id = "'+ idVideoTag +'"></video>  <br /><br />');
     $('#components_menu').append(`<li class="sidebar-menu-item ` + idVideoTag + `">
     <div class="sidebar-menu-button xx" href="ui-buttons.html">
         <i class="sidebar-menu-icon sidebar-menu-icon--left material-icons">mouse</i>
-        <span class="sidebar-menu-text">`+ ten +`</span><i class="fas fa-microphone-alt"></i><i class="fas fa-volume-mute mute-click"></i><i class="fas fa-volume-up"></i>
+        <span class="sidebar-menu-text">`+ ten +`</span><i class="voice fas fa-microphone-alt click"></i><i id="off`+idVideoTag+`" onClick="offVolume('`+ idVideoTag +`')" class="voice fas fa-volume-mute mute-click"></i><i id="on`+idVideoTag+`" onClick="onVolume('`+ idVideoTag +`')" style="color:aqua;" class="voice fas fa-volume-up"></i>
     </div>
 </li>`);
     const audio = document.getElementById(idVideoTag);
@@ -87,6 +91,7 @@ peer.on('call', call => {
     openStream()
     .then(stream => { 
         localStream = stream;
+        localStream.getAudioTracks()[0].enabled = false;
         if(test == true){
             // playStream2(stream);
         }
@@ -97,3 +102,43 @@ peer.on('call', call => {
     });
     
 });
+
+
+function offVolume(id) {
+    console.log("off" + id)
+    var video = document.getElementById(id);
+    console.log(video.muted = true);
+    var idx = "#on" + id;
+    $(idx).css("color","grey");
+    idx = "#off" + id;
+    $(idx).css("color","aqua");
+
+}
+function onVolume(id) {
+    console.log("on" + id)
+    var video = document.getElementById(id);
+    console.log(video.muted = false);
+    var idx = "#off" + id;
+    $(idx).css("color","grey");
+    idx = "#on" + id;
+    $(idx).css("color","aqua");
+
+}
+
+function onMicro(){
+    console.log("onMicro")
+    localStream.getAudioTracks()[0].enabled = true;
+    $('#onMicro').css("color","aqua");
+    $('#offMicro').css("color","grey");
+
+}
+function offMicro(){
+    console.log("offMicro")
+    localStream.getAudioTracks()[0].enabled = false;
+    $('#onMicro').css("color","grey");
+    $('#offMicro').css("color","aqua");
+}
+
+function videoPlaying(){
+    console.log("play")
+}

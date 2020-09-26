@@ -303,10 +303,10 @@ app.get('/:nameCode', (req,res) => {
   var nameCode = req.params.nameCode;
   console.log(nameCode);
   if(!req.cookies.name) return res.render('resiter', {nameCode:nameCode});
-  getDataUser("user").then(function(result){
-    let soluong = result[0].soluong + 1;
-    updateViewsUser("user",soluong);
-  })
+  // getDataUser("user").then(function(result){
+  //   let soluong = result[0].soluong + 1;
+  //   updateViewsUser("user",soluong);
+  // })
   getDataCode(nameCode).then(function(result){
     // console.log(result.length);
     

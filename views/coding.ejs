@@ -87,7 +87,9 @@
 .mute-click{
   left: 0;
 }
-
+.voice{
+    padding-left: 10px;
+}
 </style>
 </head>
 
@@ -194,10 +196,11 @@
                         <option value="twilight">twilight</option>
                         <option value="xcode">xcode</option>
                       </select>
-                        <form class="search-form d-none d-xl-flex flex mr-3" action="index.html">
-                            <button class="btn" type="submit"><i class="material-icons">search</i></button>
-                            <input type="text" class="form-control" placeholder="Search">
-                        </form>
+                      <%if (data[0].passWord == '' || data[0].passWord == null) { %>
+                        <p id="time" class="text-right font-italic text-warning"><code>*Your note will be deleted after 1 months if not set password</code><a id="modall" href="#"> Set Password</a></p>
+                      <% } else { %>
+                        <p id="time" class="text-right font-italic text-warning"><code>*Your note will be deleted after 6 months.Your password: </code><%=data[0].passWord%></p>
+                      <% } %>
                         <ul class="nav navbar-nav ml-auto d-none d-md-flex border-left">
                             <!-- <li class="nav-item">
         <a href="" class="nav-link">
@@ -390,8 +393,8 @@
 
                 <div class="mdk-drawer  js-mdk-drawer" id="default-drawer" data-align="start">
                     <div class="mdk-drawer__content">
-                        <div class="sidebar sidebar-light sidebar-left" data-perfect-scrollbar>
-                            <div class="sidebar-heading sidebar-m-t">Menu</div>
+                        <div class="sidebar sidebar-left ps sidebar-dark bg-dark" data-perfect-scrollbar>
+                            <div class="sidebar-heading sidebar-m-t"><%=user%><a id="modall2" href="#"><i class="voice fas fa-pencil-alt"></i></a><i  id="onMicro" onclick="onMicro()" class="fas fa-microphone-alt voice"></i><i style="color: aqua;"  id="offMicro" onclick="offMicro()" class="fas fa-microphone-alt-slash voice"></i></div>
                             <ul class="sidebar-menu">
 
                                 <li class="sidebar-menu-item active">
@@ -402,7 +405,7 @@
                                 </li>
                                 
                             </ul>
-                            <div class="sidebar-heading">Friends<i class="fas fa-microphone-alt"></i><i class="fas fa-volume-mute mute-click"></i><i class="fas fa-volume-up"></i></div>
+                            <div class="sidebar-heading">Friends</div>
                             <div class="sidebar-block p-0" >
                                 <ul class="sidebar-menu" id="components_menu">
                                   <div id="div-chat">
@@ -654,7 +657,56 @@ function searchToggle(obj, evt){
             }
         }
       </script>
-
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Set password:</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form action = "/setPassword/<%=data[0].nameCode%>" method = "POST">
+            <div class="form-group">
+              <label for="message-text" class="col-form-label">password:</label>
+              <input type = "text" name = "pass" class="form-control" id="message-text"></input>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              <input type="submit" class="btn btn-primary" value="Save">
+            </div>
+          </form>
+        </div>
+        
+      </div>
+    </div>
+  </div>
+  <div class="modal fade" id="exampleModal2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">New username:</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form action = "/newUsername/<%=data[0].nameCode%>" method = "POST">
+            <div class="form-group">
+              <label for="message-text" class="col-form-label">username:</label>
+              <input type = "text" name = "newUsername" class="form-control" id="message-text"></input>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              <input type="submit" class="btn btn-primary" value="Save">
+            </div>
+          </form>
+        </div>
+        
+      </div>
+    </div>
+  </div>
 </body>
 
 </html>
