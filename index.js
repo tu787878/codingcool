@@ -356,7 +356,7 @@ app.post('/newUsername/:nameCode', (req,res) => {
 
 });
 var allUser = [];
-const arrUserInfo = [];
+const arrUserInfo = {};
 
 //**********socketio**********//
 
@@ -384,12 +384,17 @@ io.on('connection', socket => {
       // socket.broadcast.emit('nes',fullData);
     });
     socket.on('NGUOI_DUNG_DANG_KY', user => {
+      console.log(user.dataId)
+      arrUserInfo[user.peerId] = user.ten;
+      // console.log(arrUserInfo)
+      io.in(room).emit('DANH_SACH_ONLINE', arrUserInfo);
       socket.peerId = user.peerId;
       // socket.emit('DANH_SACH_ONLINE', arrUserInfo);
-      socket.broadcast.to(room).emit('CO_NGUOI_DUNG_MOI', user);
+      socket.broadcast.to(room).emit('CO_NGUOI_DUNG_MOI', user, socket.id);
     });
 
     socket.on('disconnect', () => {
+      delete arrUserInfo[socket.peerId]
         io.emit('AI_DO_NGAT_KET_NOI', socket.peerId);
     });
 
