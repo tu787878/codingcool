@@ -1,4 +1,4 @@
-const socket = io('localhost:3000');
+const socket = io('e-code.halotu.me');
 // var socket = io("https://ecoder.herokuapp.com/");
 $('#div-chat').hide();
 var json = {};
