@@ -69,10 +69,24 @@ function playStream2(stream) {
 
 // openStream()
 // .then(stream => playStream('localStream', stream));
+var peer, ice;
 
-const peer = new Peer({ 
-    key: 'lwjd5qra8257b9',
-});
+var iceServers= [{
+    urls: [ "stun:eu-turn3.xirsys.com" ]
+ }, {
+    username: "r2FLMiP81Qrc6fkRWp8Y6DgCFGXM97wJst50rQw35B-oykC5j0nxDSnPkeCcByDDAAAAAF9wgTh0dTc4Nzg3OA==",
+    credential: "70f9fae8-00ba-11eb-9f31-0242ac140004",
+    urls: [
+        "turn:eu-turn3.xirsys.com:80?transport=udp",
+        "turn:eu-turn3.xirsys.com:3478?transport=udp",
+        "turn:eu-turn3.xirsys.com:80?transport=tcp",
+        "turn:eu-turn3.xirsys.com:3478?transport=tcp",
+        "turns:eu-turn3.xirsys.com:443?transport=tcp",
+        "turns:eu-turn3.xirsys.com:5349?transport=tcp"
+    ]
+ }];
+
+peer = new Peer({ key: 'lwjd5qra8257b9', config:iceServers});
 
 peer.on('open', id => {
 

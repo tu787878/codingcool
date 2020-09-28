@@ -24,8 +24,9 @@
     <!-- Font Awesome FREE Icons -->
     <link type="text/css" href="assets/css/vendor-fontawesome-free.css" rel="stylesheet">
     <link type="text/css" href="assets/css/vendor-fontawesome-free.rtl.css" rel="stylesheet">
-
-
+<script>
+  var localAdress = "http://localhost:3000/";
+</script>
     <!-- Global site tag (gtag.js) - Google Analytics -->
     <!-- <script async src="https://www.googletagmanager.com/gtag/js?id=UA-133433427-1"></script>
 <script>
@@ -126,12 +127,17 @@
 
 
                         <div class="dropdown d-none d-sm-flex border-right navbar-border navbar-height align-items-center">
-                            <a href="#demos" class="btn btn-navbar dropdown-toggle mx-3" data-toggle="dropdown">CRM</a>
+                            <a href="#demos" class="btn btn-navbar dropdown-toggle mx-3" data-toggle="dropdown">Action</a>
                             <div id="demos" class="dropdown-menu">
-                                <a class="dropdown-item active" href="index.html">CRM</a>
-                                <a class="dropdown-item" href="app-projects.html">Projects</a>
-                                <a class="dropdown-item" href="student-dashboard.html">Learning</a>
-                                <a class="dropdown-item" href="social-activity.html">Social</a>
+                                <a class="dropdown-item active" href="">Action</a>
+                                <a class="dropdown-item" href="#" onclick="myFunctionCopy()">Share</a>
+                                <a class="dropdown-item" href="#" id="modall3">Add to your codes</a>
+                                <%if (data[0].passWord == '' || data[0].passWord == null) { %>
+                                <a class="dropdown-item modall" id="modall" href="#"> Set Password</a>
+                                <% } else { %>
+                                  <a class="dropdown-item modall" href="#"> <code> Your password:</code> <%=data[0].passWord%></a>
+                               
+                                <% } %>
                             </div>
                         </div>
                         <span class="mr-3"></span>
@@ -196,11 +202,7 @@
                         <option value="twilight">twilight</option>
                         <option value="xcode">xcode</option>
                       </select>
-                      <%if (data[0].passWord == '' || data[0].passWord == null) { %>
-                        <p id="time" class="text-right font-italic text-warning"><code>*Your note will be deleted after 1 months if not set password</code><a id="modall" href="#"> Set Password</a></p>
-                      <% } else { %>
-                        <p id="time" class="text-right font-italic text-warning"><code>*Your note will be deleted after 6 months.Your password: </code><%=data[0].passWord%></p>
-                      <% } %>
+                     
                         <ul class="nav navbar-nav ml-auto d-none d-md-flex border-left">
                             <!-- <li class="nav-item">
         <a href="" class="nav-link">
@@ -353,21 +355,38 @@
                                 <a href="#account_menu" class="nav-link dropdown-toggle" data-toggle="dropdown" data-caret="false">
                                     <!-- <img src="assets/images/avatar/demi.png" class="rounded-circle" width="40" alt="Frontted"> -->
                                     <span class="avatar avatar-sm">
-                                        <span class="avatar-title rounded-circle bg-warning">AD</span>
+                                        <% if(login){%>
+                                          <% if(login.image_url){%>
+                                            <img src="<%=login.image_url%>" alt="">
+                                          <%} else {%>
+                                            <span class="avatar-title rounded-circle bg-warning">N</span>
+                                          <%}%>
+                                        <%}else{%>
+                                          <span class="avatar-title rounded-circle bg-warning">Guest</span>
+                                          <%}%>
                                     </span>
                                 </a>
+                                <% if(login){%>
                                 <div id="account_menu" class="dropdown-menu dropdown-menu-right">
                                     <div class="dropdown-item-text dropdown-item-text--lh">
-                                        <div><strong>Adrian Demian</strong></div>
-                                        <div>@adriandemian</div>
+                                        <div><strong><%=login.name%></strong></div>
+                                        <div></div>
                                     </div>
                                     <div class="dropdown-divider"></div>
-                                    <a class="dropdown-item active" href="index.html">Dashboard</a>
-                                    <a class="dropdown-item" href="profile.html">My profile</a>
-                                    <a class="dropdown-item" href="edit-account.html">Edit account</a>
+                                    <a class="dropdown-item" href="/user/profile">My profile</a>
+                                    <a class="dropdown-item" href="/user/edit">Edit account</a>
                                     <div class="dropdown-divider"></div>
-                                    <a class="dropdown-item" href="login.html">Logout</a>
+                                    <a class="dropdown-item" href="/user/logout">Logout</a>
                                 </div>
+                                <%}else{%>
+                                  <div id="account_menu" class="dropdown-menu dropdown-menu-right">
+                                    <div class="dropdown-item-text dropdown-item-text--lh">
+                                        <div><strong>Guest</strong></div>
+                                    </div>
+                                    <div class="dropdown-divider"></div>
+                                    <a class="dropdown-item" href="/user/login/<%=data[0].nameCode%>">Login</a>
+                                </div>
+                                <%}%>
                             </li>
                         </ul>
 
@@ -396,14 +415,52 @@
                         <div class="sidebar sidebar-left ps sidebar-dark bg-dark" data-perfect-scrollbar>
                             <div class="sidebar-heading sidebar-m-t"><%=user%><a id="modall2" href="#"><i class="voice fas fa-pencil-alt"></i></a><i  id="onMicro" onclick="onMicro()" class="fas fa-microphone-alt voice"></i><i style="color: aqua;"  id="offMicro" onclick="offMicro()" class="fas fa-microphone-alt-slash voice"></i></div>
                             <ul class="sidebar-menu">
-
-                                <li class="sidebar-menu-item active">
-                                    <a class="sidebar-menu-button" href="index.html">
-                                        <i class="sidebar-menu-icon sidebar-menu-icon--left material-icons">view_compact</i>
-                                        <span class="sidebar-menu-text">My Codes</span>
-                                    </a>
-                                </li>
                                 
+                                
+
+                                <li class="sidebar-menu-item">
+                                  <a class="sidebar-menu-button" data-toggle="collapse" href="#layouts_menu">
+                                      <i class="sidebar-menu-icon sidebar-menu-icon--left material-icons">view_compact</i>
+                                      <span class="sidebar-menu-text">My Codes</span>
+                                      <span class="ml-auto sidebar-menu-toggle-icon"></span>
+                                  </a>
+                                  <ul class="sidebar-submenu collapse" id="layouts_menu">
+                                     
+                                    <!-- <li class="sidebar-menu-item active">
+                                          <a class="sidebar-menu-button" href="index.html">
+                                              <span class="sidebar-menu-text">Default</span>
+                                          </a>
+                                      </li> -->
+
+                                      <li class="sidebar-menu-item active"></li>
+                                        <% if(login != null){ %>
+                                            <!-- <p><a  style="padding-left: 30px;" href="">Add link ...</a></p> -->
+
+                                           
+                                      <% } else{ %>  
+                                          <p><a  style="padding-left: 30px;" href="/user/login/<%=data[0].nameCode%>">Login here!</a></p>
+                                      <% } %>
+                                      </li>
+
+                                      <% library.forEach(function(link){ %>
+                                      <li class="sidebar-menu-item active"></li>
+                                          <a class="sidebar-menu-button" href="localhost:3000/<%= link.name_code%>">
+                                            <%if(link.name_code === data[0].nameCode){%>
+                                              <span style="color: white;" class="sidebar-menu-text"><%= link.dess%><i class="voice fas fa-pencil-alt"></i><i style="padding-left: 5px;" class="far fa-trash-alt"></i>
+
+                                              </span>
+                                              <%}else{%>
+                                                <span class="sidebar-menu-text"><%= link.dess%><i class="voice fas fa-pencil-alt"></i><i style="padding-left: 5px;" class="far fa-trash-alt"></i>
+
+                                                </span>
+                                              <%}%>
+                                          </a>
+                                      </li>
+                                        <% }); %>
+                                      
+                                  </ul>
+                              </li>
+                               
                             </ul>
                             <div class="sidebar-heading">Friends</div>
                             <div class="sidebar-block p-0" >
@@ -413,17 +470,25 @@
                                     
                                 </ul>
 
-                                <div class="sidebar-p-a sidebar-b-y">
-                                    <div class="d-flex align-items-top mb-2">
-                                        <div class="sidebar-heading m-0 p-0 flex text-body js-text-body">Progress</div>
-                                        <div class="font-weight-bold text-success">60%</div>
-                                    </div>
-                                    <div class="progress">
-                                        <div class="progress-bar bg-success" role="progressbar" style="width: 60%" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100"></div>
-                                    </div>
-                                </div>
+                               
+                                <div class="sidebar-heading">Music</div>
+                                
+                                  <% if(login != null){ %>
+                                    <p><a  style="padding-left: 30px;" href="">Add mp3 ...</a></p>
+                                <% } else{ %>  
+                                    <p><a  style="padding-left: 30px;" href="/user/login/<%=data[0].nameCode%>">Login here!</a></p>
+                                <% } %>
+                              
                             </div>
-
+                            <div class="sidebar-p-a sidebar-b-y">
+                              <div class="d-flex align-items-top mb-2">
+                                  <div class="sidebar-heading m-0 p-0 flex text-body js-text-body">Progress</div>
+                                  <div class="font-weight-bold text-success">60%</div>
+                              </div>
+                              <div class="progress">
+                                  <div class="progress-bar bg-success" role="progressbar" style="width: 60%" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100"></div>
+                              </div>
+                          </div>
                             <div class="sidebar-p-a">
                                 <a href="https://themeforest.net/item/stack-admin-bootstrap-4-dashboard-template/22959011" class="btn btn-outline-primary btn-block">Purchase &dollar;35</a>
                             </div>
@@ -506,11 +571,12 @@
 <script>
    var nameOfUser = '<%=user%>';
 </script>
+<script type="text/javascript" src="/js/xirsys-ice.js"></script>
 <script src="/js/main.js" type="text/javascript"></script>
 <script>
 
   
-    var localAdress = "http://localhost:3000/";
+    
         function myFunctionCopy() {
   /* Get the text field */
   var copyText = localAdress + "<%=data[0].nameCode%>";
@@ -585,11 +651,14 @@ $( "#them" )
       })
       .change();
 
-$("#modall").on('click',function(){
+$(".modall").on('click',function(){
   $('#exampleModal').modal('show')
 })
 $("#modall2").on('click',function(){
   $('#exampleModal2').modal('show')
+})
+$("#modall3").on('click',function(){
+  $('#exampleModal3').modal('show')
 })
 // socket.on('dataOld', old => {
 //   silent = true;
@@ -707,6 +776,36 @@ function searchToggle(obj, evt){
       </div>
     </div>
   </div>
+
+
+  <div class="modal fade" id="exampleModal3" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Add code to your library</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form action = "/user/add-code/<%=data[0].nameCode%>" method = "POST">
+            <div class="form-group">
+              <label for="message-text" class="col-form-label">descript:</label>
+              <input type = "text" name = "dess" class="form-control" id="message-text"></input>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              <input type="submit" class="btn btn-primary" value="Save">
+            </div>
+          </form>
+        </div>
+        
+      </div>
+    </div>
+  </div>
+
+
+
 </body>
 
 </html>

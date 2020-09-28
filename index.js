@@ -5,6 +5,7 @@ var session = require("express-session");
 var bodyParser = require('body-parser');
 var cookieParser = require('cookie-parser');
 var Promise = require('promise');
+
 var tam = true;
 
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -182,6 +183,85 @@ function getDataUser(user){
     });
 })
 }
+
+function checkLogin(email,password){
+  var sql = "SELECT * FROM user WHERE email = ? and password = ?";
+
+  return new Promise((resolve, reject) => {
+    db.query(sql,[email,password], (err,result) => {
+        if(err) reject(err);
+        resolve(JSON.parse(JSON.stringify(result)));
+      // console.log(result)
+    });
+})
+}
+
+function checkEmail(email){
+  var sql = "SELECT email FROM user WHERE email = ?";
+
+  return new Promise((resolve, reject) => {
+    db.query(sql,[email], (err,result) => {
+        if(err) reject(err);
+        resolve(JSON.parse(JSON.stringify(result)));
+      // console.log(result)
+    });
+})
+}
+
+function getUserDetails(userId){
+  var sql = "SELECT * FROM user_details WHERE user_id = ?";
+
+  return new Promise((resolve, reject) => {
+    db.query(sql,[userId], (err,result) => {
+        if(err) reject(err);
+        resolve(JSON.parse(JSON.stringify(result)));
+      // console.log(result)
+    });
+})
+}
+
+function getLibrary(userId){
+  var sql = "SELECT * FROM user_code WHERE user_id = ?";
+
+  return new Promise((resolve, reject) => {
+    db.query(sql,[userId], (err,result) => {
+        if(err) reject(err);
+        resolve(JSON.parse(JSON.stringify(result)));
+      // console.log(result)
+    });
+})
+}
+function saveUser(user_id, name, email, pasword, active){
+  var sql = "INSERT INTO user (user_id, name, email, password, active) VALUES (?, ?, ?, ?, ?)";
+  return new Promise((resolve, reject) => {
+    db.query(sql,[user_id, name, email, pasword, active], (err,result) => {
+        if(err) reject(err);
+        resolve(JSON.parse(JSON.stringify(result)));
+      // console.log(result)
+    });
+})
+}
+
+function saveUserDetails(user_id, name){
+  var sql = "INSERT INTO user_details (user_id, name, social_link, image_url, title) VALUES (?, ?, ?, ?, ?)";
+  return new Promise((resolve, reject) => {
+    db.query(sql,[user_id, name, "", "", "hello"], (err,result) => {
+        if(err) reject(err);
+        resolve(JSON.parse(JSON.stringify(result)));
+      // console.log(result)
+    });
+})
+}
+function saveCodeToLibrary(user_id, nameCode, dess){
+  var sql = "INSERT INTO user_code (user_id, name_code, dess) VALUES (?, ?, ?)";
+  return new Promise((resolve, reject) => {
+    db.query(sql,[user_id, nameCode, dess], (err,result) => {
+        if(err) reject(err);
+        resolve(JSON.parse(JSON.stringify(result)));
+      // console.log(result)
+    });
+})
+}
 function makeNameCode(length) {
   var result           = '';
   var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
@@ -219,7 +299,7 @@ app.get('/', (req,res) => {
   // console.log(req.cookies.name);
   var nameCode;
   var out = false;
-  if(req.cookies.name){
+  if(req.session.name){
     while(!out){
       nameCode = makeNameCode(8);
       let pass = '';
@@ -248,7 +328,8 @@ app.post('/',(req,res) => {
   var nameCode;
   var out = false;
   var userName = req.body.name;
-  res.cookie('name',userName);
+  req.session.name = userName;
+  // res.cookie('name',userName);
   if(req.body.nameCode != 0) return res.redirect('/'+ req.body.nameCode);
     while(!out){
       nameCode = makeNameCode(6);
@@ -269,7 +350,7 @@ app.post('/',(req,res) => {
   }
     return res.redirect('/'+ nameCode);
 });
-
+/////////*******************Can Sua quyen */
 app.post('/setPassword/:nameCode',(req,res) => {
   var pass = req.body.pass;
   var nameCode = req.params.nameCode;
@@ -301,8 +382,7 @@ app.get('/find',(req,res) => {
 //***********nang cap *********/
 app.get('/:nameCode', (req,res) => {
   var nameCode = req.params.nameCode;
-  console.log(nameCode);
-  if(!req.cookies.name) return res.render('resiter', {nameCode:nameCode});
+  if(!req.session.name) return res.render('resiter', {nameCode:nameCode});
   // getDataUser("user").then(function(result){
   //   let soluong = result[0].soluong + 1;
   //   updateViewsUser("user",soluong);
@@ -316,16 +396,27 @@ app.get('/:nameCode', (req,res) => {
       let lang = "c_cpp";
       createNewCode(nameCode, pass, member, lang);
       return res.redirect('/' + nameCode);
-    }else {
-      let views = result[0].views + 1;
-      updateViewsCode(nameCode,views);
     }
+    // else {
+    //   let views = result[0].views + 1;
+    //   updateViewsCode(nameCode,views);
+    // }
 
-    if((result[0].passWord != "") && req.cookies[nameCode] !== "true"){
+    if((result[0].passWord != "") && req.session[nameCode] !== "true"){
       return res.render('xuli',{nameCode: nameCode});
     }
-    console.log("thanh cong");
-    return res.render('coding',{data:result,user:req.cookies.name});
+    var login;
+    if(req.session.userId){
+      getUserDetails(req.session.userId).then((data) => {
+        login = data[0];
+        getLibrary(req.session.userId).then(library=>{
+          return res.render('coding',{data:result,user:req.session.name,linkCodes:null,musiks:null,login:login, library:library});
+        })
+        
+      })
+    } else{
+      return res.render('coding',{data:result,user:req.session.name,linkCodes:null,musiks:null,login:null, library:null});
+    }
   })
     
 });
@@ -341,7 +432,7 @@ app.post('/testPass/:nameCode', (req,res) => {
     var hihi = result[0].passWord;
     // console.log(hihi);
     if(hihi === pass){
-      res.cookie(nameCode,"true");
+      req.session[nameCode]="true";
       return res.redirect('/'+ nameCode);
     }
     return res.redirect('/false');
@@ -351,10 +442,92 @@ app.post('/testPass/:nameCode', (req,res) => {
 app.post('/newUsername/:nameCode', (req,res) => {
   var username = req.body.newUsername;
   var nameCode = req.params.nameCode;
-  res.cookie('name',username);
+  req.session.name=username;
   return res.redirect('/'+ nameCode);
 
 });
+
+app.get('/user/login/:nameCode',(req,res)=>{
+  res.render('login',{nameCode:req.params.nameCode});
+})
+
+app.post('/user/login',(req,res)=>{
+  var email = req.body.email;
+  var password = req.body.password;
+  var nameCode = req.body.nameCode;
+  checkLogin(email,password).then(data=>{
+    console.log("user_id " + data[0].user_id);
+    if(data[0].user_id!=""){
+      req.session.userId = data[0].user_id;
+      req.session.name = data[0].name;
+      if(nameCode)
+        res.redirect('/' + nameCode);
+      else
+        res.redirect('/');
+
+    }
+    else{
+      res.redirect('/user/login?err');
+    }
+  })
+})
+
+app.get('/user/signup/:nameCode',(req,res)=>{
+  res.render('signup',{nameCode:req.params.nameCode});
+})
+
+app.post('/user/signup',(req,res)=>{
+  var email = req.body.email;
+  var password = req.body.password;
+  var name = req.body.name;
+  var nameCode = req.body.nameCode;
+console.log("email " + email)
+  checkEmail(email).then((data,err)=>{
+    if(data != "" && data != undefined){
+      res.redirect('/user/signup?err=email');
+    }
+    
+    else{
+      console.log("hihihih");
+
+      var user_id = new Date().getTime().toString();
+      var active = 1;
+      saveUser(user_id, name, email, password, active).then(()=>{
+        saveUserDetails(user_id, name).then(()=>{
+          req.session.userId = user_id;
+          req.session.name = name;
+          if(nameCode)
+            res.redirect('/' + nameCode);
+          else
+            res.redirect('/');
+        });
+      });
+      
+    }
+  }).catch(err => {
+    console.log(err)
+    res.redirect('/user/signup?err=undefine');
+  })
+})
+
+app.get('/user/logout', (req,res)=>{
+  req.session.destroy(); 
+  res.redirect('/user/login/');
+})
+
+app.post('/user/add-code/:nameCode', (req,res) => {
+  var dess = req.body.dess;
+  var nameCode = req.params.nameCode;
+  if(req.session.userId){
+    var userId = req.session.userId;
+    saveCodeToLibrary(userId, nameCode, dess).then(()=>{
+      res.redirect('/' + nameCode);
+    })
+
+  }else{
+    res.redirect('/user/login/' + nameCode);
+  }
+})
 var allUser = [];
 const arrUserInfo = {};
 
