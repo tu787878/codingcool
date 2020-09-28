@@ -12,7 +12,7 @@
 
     <!-- Perfect Scrollbar -->
     <link type="text/css" href="assets/vendor/perfect-scrollbar.css" rel="stylesheet">
-
+    <link rel="stylesheet" type="text/css" href="./css/maudio.css">
     <!-- App CSS -->
     <link type="text/css" href="assets/css/app.css" rel="stylesheet">
     <link type="text/css" href="assets/css/app.rtl.css" rel="stylesheet">
@@ -415,12 +415,8 @@
                         <div class="sidebar sidebar-left ps sidebar-dark bg-dark" data-perfect-scrollbar>
                             <div class="sidebar-heading sidebar-m-t"><%=user%><a id="modall2" href="#"><i class="voice fas fa-pencil-alt"></i></a><i  id="onMicro" onclick="onMicro()" class="fas fa-microphone-alt voice"></i><i style="color: aqua;"  id="offMicro" onclick="offMicro()" class="fas fa-microphone-alt-slash voice"></i></div>
                             <ul class="sidebar-menu">
-                                
-                                
-
                                 <li class="sidebar-menu-item">
                                   <a class="sidebar-menu-button" data-toggle="collapse" href="#layouts_menu">
-                                      <i class="sidebar-menu-icon sidebar-menu-icon--left material-icons">view_compact</i>
                                       <span class="sidebar-menu-text">My Codes</span>
                                       <span class="ml-auto sidebar-menu-toggle-icon"></span>
                                   </a>
@@ -441,9 +437,9 @@
                                           <p><a  style="padding-left: 30px;" href="/user/login/<%=data[0].nameCode%>">Login here!</a></p>
                                       <% } %>
                                       </li>
-
+                                      <%if(library !=  null){%>
                                       <% library.forEach(function(link){ %>
-                                      <li class="sidebar-menu-item active"></li>
+                                      <li class="sidebar-menu-item active">
                                           <a class="sidebar-menu-button" href="localhost:3000/<%= link.name_code%>">
                                             <%if(link.name_code === data[0].nameCode){%>
                                               <span style="color: white;" class="sidebar-menu-text"><%= link.dess%><i class="voice fas fa-pencil-alt"></i><i style="padding-left: 5px;" class="far fa-trash-alt"></i>
@@ -457,29 +453,51 @@
                                           </a>
                                       </li>
                                         <% }); %>
-                                      
+                                        <% } %>
                                   </ul>
                               </li>
                                
-                            </ul>
-                            <div class="sidebar-heading">Friends</div>
+                            
+                            <div class="sidebar-menu-button">Friends</div>
                             <div class="sidebar-block p-0" >
                                 <ul class="sidebar-menu" id="components_menu">
                                   <div id="div-chat">
                                   </div>
                                     
                                 </ul>
-
-                               
-                                <div class="sidebar-heading">Music</div>
-                                
-                                  <% if(login != null){ %>
-                                    <p><a  style="padding-left: 30px;" href="">Add mp3 ...</a></p>
-                                <% } else{ %>  
-                                    <p><a  style="padding-left: 30px;" href="/user/login/<%=data[0].nameCode%>">Login here!</a></p>
-                                <% } %>
-                              
                             </div>
+                            <!-- <div id="app"></div> -->
+                            <audio controls src="/mp3-upload/test.mp3"></audio>
+
+                            <li class="sidebar-menu-item">
+                              <a class="sidebar-menu-button" data-toggle="collapse" href="#layouts_menuu">
+                                  <div>Music</div>
+                                  <span class="ml-auto sidebar-menu-toggle-icon"></span>
+                                </a>
+                                <ul class="sidebar-submenu collapse" id="layouts_menuu">
+                                  <% if(login != null){ %>
+                                    <p><a id="modall4"  style="padding-left: 30px;" href="#">Add mp3 ...</a></p>
+                                    
+                                  <% } else{ %>  
+                                    <p><a  style="padding-left: 30px;" href="/user/login/<%=data[0].nameCode%>">Login here!</a></p>
+                                  <% } %>
+                                  <%if(musics !=  null){%>
+                                    <% musics.forEach(function(music){ %>
+                                    <li class="sidebar-menu-item active"></li>
+                                        <a class="sidebar-menu-button" href="#">
+                                            <span style="color: white;" class="sidebar-menu-text"><%= music.name%><i class="voice fas fa-pencil-alt"></i><i style="padding-left: 5px;" class="far fa-trash-alt"></i>
+
+                                            </span>
+                                            
+                                        </a>
+                                    </li>
+                                      <% }); %>
+                                      <% } %>
+
+                                </ul>
+                                 
+                              </li>
+                            </ul>
                             <div class="sidebar-p-a sidebar-b-y">
                               <div class="d-flex align-items-top mb-2">
                                   <div class="sidebar-heading m-0 p-0 flex text-body js-text-body">Progress</div>
@@ -489,6 +507,11 @@
                                   <div class="progress-bar bg-success" role="progressbar" style="width: 60%" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100"></div>
                               </div>
                           </div>
+                          <div class="sidebar-p-a sidebar-b-y">
+                          <button id="snow" type="button" class="btn btn-primary">
+                            <i class="material-icons">ac_unit</i>
+                          </button>
+                        </div>
                             <div class="sidebar-p-a">
                                 <a href="https://themeforest.net/item/stack-admin-bootstrap-4-dashboard-template/22959011" class="btn btn-outline-primary btn-block">Purchase &dollar;35</a>
                             </div>
@@ -537,7 +560,7 @@
     <script src="assets/js/dropdown.js"></script>
     <script src="assets/js/sidebar-mini.js"></script>
     <script src="assets/js/app.js"></script>
-
+    <script src="./js/maudio.js"></script>
     <!-- App Settings (safe to remove) -->
     <script src="assets/js/app-settings.js"></script>
 
@@ -573,6 +596,21 @@
 </script>
 <script type="text/javascript" src="/js/xirsys-ice.js"></script>
 <script src="/js/main.js" type="text/javascript"></script>
+
+<script>
+
+  // var h = '<audio controls src="./audio-test-01.mp3" autoplay="autoplay"></audio><audio controls src="https://mycugb.com/17ing/music/yc_yixin_yunkaiwusan.mp3"></audio><audio controls src="https://mycugb.com/17ing/music/17ing_20130508.mp3"></audio>'
+  
+  
+  maudio({
+      obj:'audio',
+      fastStep:10
+  })
+  
+  
+  
+  // $('audio')[0].play()
+  </script>
 <script>
 
   
@@ -659,6 +697,9 @@ $("#modall2").on('click',function(){
 })
 $("#modall3").on('click',function(){
   $('#exampleModal3').modal('show')
+})
+$("#modall4").on('click',function(){
+  $('#exampleModal4').modal('show')
 })
 // socket.on('dataOld', old => {
 //   silent = true;
@@ -804,8 +845,72 @@ function searchToggle(obj, evt){
     </div>
   </div>
 
+  <div class="modal fade" id="exampleModal4" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Add mp3 file to your library</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form ref='uploadForm' 
+          id='uploadForm' 
+          action='/user/upload/<%=data[0].nameCode%>' 
+          method='post' 
+          encType="multipart/form-data">
+          <input type="text" name="name" />
+            <input type="file" name="sampleFile" />
+            <input type='submit' value='Upload!' />
+        </form> 
+        </div>
+        
+      </div>
+    </div>
+  </div>
+  <style>
+    /* customizable snowflake styling */
+    .snowflake {
+      color: #fff;
+      font-size: 1em;
+      font-family: Arial, sans-serif;
+      text-shadow: 0 0 5px #000;
+    }
+    @-webkit-keyframes snowflakes-fall{0%{top:-10%}100%{top:100%}}@-webkit-keyframes snowflakes-shake{0%,100%{-webkit-transform:translateX(0);transform:translateX(0)}50%{-webkit-transform:translateX(80px);transform:translateX(80px)}}@keyframes snowflakes-fall{0%{top:-10%}100%{top:100%}}@keyframes snowflakes-shake{0%,100%{transform:translateX(0)}50%{transform:translateX(80px)}}.snowflake{position:fixed;top:-10%;z-index:9999;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none;cursor:default;-webkit-animation-name:snowflakes-fall,snowflakes-shake;-webkit-animation-duration:10s,3s;-webkit-animation-timing-function:linear,ease-in-out;-webkit-animation-iteration-count:infinite,infinite;-webkit-animation-play-state:running,running;animation-name:snowflakes-fall,snowflakes-shake;animation-duration:10s,3s;animation-timing-function:linear,ease-in-out;animation-iteration-count:infinite,infinite;animation-play-state:running,running}.snowflake:nth-of-type(0){left:1%;-webkit-animation-delay:0s,0s;animation-delay:0s,0s}.snowflake:nth-of-type(1){left:10%;-webkit-animation-delay:1s,1s;animation-delay:1s,1s}.snowflake:nth-of-type(2){left:20%;-webkit-animation-delay:6s,.5s;animation-delay:6s,.5s}.snowflake:nth-of-type(3){left:30%;-webkit-animation-delay:4s,2s;animation-delay:4s,2s}.snowflake:nth-of-type(4){left:40%;-webkit-animation-delay:2s,2s;animation-delay:2s,2s}.snowflake:nth-of-type(5){left:50%;-webkit-animation-delay:8s,3s;animation-delay:8s,3s}.snowflake:nth-of-type(6){left:60%;-webkit-animation-delay:6s,2s;animation-delay:6s,2s}.snowflake:nth-of-type(7){left:70%;-webkit-animation-delay:2.5s,1s;animation-delay:2.5s,1s}.snowflake:nth-of-type(8){left:80%;-webkit-animation-delay:1s,0s;animation-delay:1s,0s}.snowflake:nth-of-type(9){left:90%;-webkit-animation-delay:3s,1.5s;animation-delay:3s,1.5s}.snowflake:nth-of-type(10){left:25%;-webkit-animation-delay:2s,0s;animation-delay:2s,0s}.snowflake:nth-of-type(11){left:65%;-webkit-animation-delay:4s,2.5s;animation-delay:4s,2.5s}
+  </style>
+  
+  // HTML
+  <div class="snowflakes" aria-hidden="true">
+    <div class="snowflake">❅</div>
+    <div class="snowflake">❆</div>
+    <div class="snowflake">❅</div>
+    <div class="snowflake">❆</div>
+    <div class="snowflake">❅</div>
+    <div class="snowflake">❆</div>
+    <div class="snowflake">❅</div>
+    <div class="snowflake">❆</div>
+    <div class="snowflake">❅</div>
+    <div class="snowflake">❆</div>
+    <div class="snowflake">❅</div>
+    <div class="snowflake">❆</div>
+  </div>
 
-
+  <script>
+  var on = false;
+    $('.snowflakes').hide();
+    $('#snow').css('color','grey');
+    $('#snow').click(function(){
+      if(!on){
+        $('.snowflakes').show();
+        $('#snow').css('color','white');
+      }else{
+        $('.snowflakes').hide();
+        $('#snow').css('color','grey');
+      }
+      on=!on;
+    })
+  </script>
 </body>
 
 </html>

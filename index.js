@@ -5,11 +5,11 @@ var session = require("express-session");
 var bodyParser = require('body-parser');
 var cookieParser = require('cookie-parser');
 var Promise = require('promise');
-
+const fileUpload = require('express-fileupload');
 var tam = true;
 
 app.use(bodyParser.urlencoded({ extended: false }));
-
+app.use(fileUpload());
 
 app.use(session({
   secret : 'tudc'
@@ -231,6 +231,18 @@ function getLibrary(userId){
     });
 })
 }
+
+function getMusic(userId){
+  var sql = "SELECT * FROM music WHERE user_id = ?";
+
+  return new Promise((resolve, reject) => {
+    db.query(sql,[userId], (err,result) => {
+        if(err) reject(err);
+        resolve(JSON.parse(JSON.stringify(result)));
+      // console.log(result)
+    });
+})
+}
 function saveUser(user_id, name, email, pasword, active){
   var sql = "INSERT INTO user (user_id, name, email, password, active) VALUES (?, ?, ?, ?, ?)";
   return new Promise((resolve, reject) => {
@@ -242,6 +254,16 @@ function saveUser(user_id, name, email, pasword, active){
 })
 }
 
+function saveMusic(user_id, name, link){
+  var sql = "INSERT INTO music (user_id, name, link) VALUES (?, ?, ?)";
+  return new Promise((resolve, reject) => {
+    db.query(sql,[user_id, name, link], (err,result) => {
+        if(err) reject(err);
+        resolve(JSON.parse(JSON.stringify(result)));
+      // console.log(result)
+    });
+})
+}
 function saveUserDetails(user_id, name){
   var sql = "INSERT INTO user_details (user_id, name, social_link, image_url, title) VALUES (?, ?, ?, ?, ?)";
   return new Promise((resolve, reject) => {
@@ -292,6 +314,29 @@ function updateViewsUser(user, views){
     // console.log(result);
 });
 }
+
+app.post('/user/upload/:nameCode', function(req, res) {
+  if (!req.files || Object.keys(req.files).length === 0) {
+    return res.status(400).send('No files were uploaded.');
+  }
+
+  // The name of the input field (i.e. "sampleFile") is used to retrieve the uploaded file
+  let sampleFile = req.files.sampleFile;
+  let name = req.body.name;
+  let nameCode = req.params.nameCode;
+
+  // Use the mv() method to place the file somewhere on your server
+  var link = __dirname + '/public/mp3-upload/' + req.files.sampleFile.name;
+  if(!req.session.userId)
+    return redirect('/user/login/' + nameCode); 
+  sampleFile.mv(link, function(err) {
+    if (err)
+      return res.status(500).send(err);
+    saveMusic(req.session.userId, name, link).then(()=>{
+      res.redirect('/' + nameCode);
+    })
+  });
+});
 //**********Route**********//
 
 app.get('/', (req,res) => {
@@ -410,12 +455,15 @@ app.get('/:nameCode', (req,res) => {
       getUserDetails(req.session.userId).then((data) => {
         login = data[0];
         getLibrary(req.session.userId).then(library=>{
-          return res.render('coding',{data:result,user:req.session.name,linkCodes:null,musiks:null,login:login, library:library});
+          getMusic(req.session.userId).then(musics =>{
+            return res.render('coding',{data:result,user:req.session.name,linkCodes:null,musics:musics,login:login, library:library});
+
+          })
         })
         
       })
     } else{
-      return res.render('coding',{data:result,user:req.session.name,linkCodes:null,musiks:null,login:null, library:null});
+      return res.render('coding',{data:result,user:req.session.name,linkCodes:null,musics:null,login:null, library:null});
     }
   })
     
@@ -512,7 +560,7 @@ console.log("email " + email)
 
 app.get('/user/logout', (req,res)=>{
   req.session.destroy(); 
-  res.redirect('/user/login/');
+  res.redirect('/');
 })
 
 app.post('/user/add-code/:nameCode', (req,res) => {
