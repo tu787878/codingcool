@@ -91,6 +91,7 @@
 .voice{
     padding-left: 10px;
 }
+
 </style>
 </head>
 
@@ -202,7 +203,9 @@
                         <option value="twilight">twilight</option>
                         <option value="xcode">xcode</option>
                       </select>
-                     
+                      <button id="modallRunCode" type="button" class="btn btn-success">Run
+                        <i class="material-icons">play_circle_filled</i>
+                    </button>
                         <ul class="nav navbar-nav ml-auto d-none d-md-flex border-left">
                             <!-- <li class="nav-item">
         <a href="" class="nav-link">
@@ -440,17 +443,25 @@
                                       <%if(library !=  null){%>
                                       <% library.forEach(function(link){ %>
                                       <li class="sidebar-menu-item active">
-                                          <a class="sidebar-menu-button" href="localhost:3000/<%= link.name_code%>">
+                                         
                                             <%if(link.name_code === data[0].nameCode){%>
-                                              <span style="color: white;" class="sidebar-menu-text"><%= link.dess%><i class="voice fas fa-pencil-alt"></i><i style="padding-left: 5px;" class="far fa-trash-alt"></i>
-
-                                              </span>
+                                              <div class="sidebar-menu-button">
+                                                <a class="sidebar-menu-button" href="/<%= link.name_code%>">
+                                                  <span style="color: aqua;"><%= link.dess%></span>
+                                                </a><i onclick="editLibrary('<%= link.name_code%>','<%= link.dess%>')" class="voice fas fa-pencil-alt"></i><i onclick="deleteLibrary('<%= link.name_code%>','<%= link.dess%>')" style="padding-left: 5px;" class="far fa-trash-alt"></i>
+                                              </div>
+                                             
                                               <%}else{%>
-                                                <span class="sidebar-menu-text"><%= link.dess%><i class="voice fas fa-pencil-alt"></i><i style="padding-left: 5px;" class="far fa-trash-alt"></i>
+                                                <div class="sidebar-menu-button">
 
-                                                </span>
+                                                  <a class="sidebar-menu-button" href="/<%= link.name_code%>">
+                                                
+                                                    <span><%= link.dess%></span>
+                                                  </a><i onclick="editLibrary('<%= link.name_code%>','<%= link.dess%>')" class="voice fas fa-pencil-alt"></i><i onclick="deleteLibrary('<%= link.name_code%>','<%= link.dess%>')" style="padding-left: 5px;" class="far fa-trash-alt"></i>
+                                                </div>
+                                             
                                               <%}%>
-                                          </a>
+                                          
                                       </li>
                                         <% }); %>
                                         <% } %>
@@ -467,7 +478,7 @@
                                 </ul>
                             </div>
                             <!-- <div id="app"></div> -->
-                            <audio controls src="/mp3-upload/test.mp3"></audio>
+                            <audio id="audio_mp3" controls src="/mp3-upload/test.mp3"></audio>
 
                             <li class="sidebar-menu-item">
                               <a class="sidebar-menu-button" data-toggle="collapse" href="#layouts_menuu">
@@ -484,12 +495,9 @@
                                   <%if(musics !=  null){%>
                                     <% musics.forEach(function(music){ %>
                                     <li class="sidebar-menu-item active"></li>
-                                        <a class="sidebar-menu-button" href="#">
-                                            <span style="color: white;" class="sidebar-menu-text"><%= music.name%><i class="voice fas fa-pencil-alt"></i><i style="padding-left: 5px;" class="far fa-trash-alt"></i>
-
-                                            </span>
-                                            
-                                        </a>
+                                        <div class="sidebar-menu-button">
+                                            <a class="sidebar-menu-button" href="#"><span onclick="playMusic('<%= music.link%>')" style="color: white;" class="sidebar-menu-text"><%= music.name%></span></a><i onclick="editMusic('<%= music.name%>','<%= music.link%>')" class="voice fas fa-pencil-alt"></i><i onclick="deleteMusic('<%= music.name%>','<%= music.link%>')" style="padding-left: 5px;" class="far fa-trash-alt delete-music <%= music.link%>"></i>
+                                          </div>
                                     </li>
                                       <% }); %>
                                       <% } %>
@@ -521,7 +529,7 @@
                 </div>
             </div>
             <!-- // END drawer-layout -->
-
+           
         </div>
         <!-- // END header-layout__content -->
 
@@ -537,6 +545,7 @@
       'mini': 'mini-dashboard.html'
     }"></app-settings>
     </div>
+
 
     <!-- jQuery -->
     <script src="assets/vendor/jquery.min.js"></script>
@@ -701,6 +710,29 @@ $("#modall3").on('click',function(){
 $("#modall4").on('click',function(){
   $('#exampleModal4').modal('show')
 })
+$("#modallRunCode").on('click',function(){
+  $('#exampleModalRunCode').modal('show')
+})
+function editLibrary(nameCode,dess){
+  $('#edit-library-dess').val(dess);
+  $('#edit-library-namecode').val(nameCode);
+  $('#editLibrary').modal('show')
+}
+function deleteLibrary(nameCode, dess){
+  $('#delete-library-dess').val(dess);
+  $('#delete-library-namecode').val(nameCode);
+  $('#deleteLibrary').modal('show')
+}
+function editMusic(name,link){
+  $('#edit-music-link').val(link);
+  $('#edit-music-name').val(name);
+  $('#editMusic').modal('show')
+}
+function deleteMusic(name, link){
+  $('#delete-music-name').val(name);
+  $('#delete-music-link').val(link);
+  $('#deleteMusic').modal('show')
+}
 // socket.on('dataOld', old => {
 //   silent = true;
 //   console.log(old[0].data);
@@ -819,6 +851,143 @@ function searchToggle(obj, evt){
   </div>
 
 
+  <div class="modal fade" id="editLibrary" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Edit Library:</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form action = "/user/edit-library" method = "POST">
+            <div class="form-group">
+              <label for="message-text" class="col-form-label">name:</label>
+              <input id="edit-library-dess" type = "text" name = "dess" class="form-control"></input>
+              <input id="edit-library-namecode" type="hidden" name="nameCode" value="" />
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              <input type="submit" class="btn btn-primary" value="Save">
+            </div>
+          </form>
+        </div>
+        
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="deleteLibrary" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Delete Library:</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form action = "/user/delete-library" method = "POST">
+            <div class="form-group">
+              <label for="message-text" class="col-form-label">Do you want to delete this code?</label>
+              <input disabled id="delete-library-dess" type = "text" name = "dess" class="form-control"></input>
+              <input id="delete-library-namecode" type="hidden" name="nameCode" value="" />
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              <input type="submit" class="btn btn-primary" value="Yes">
+            </div>
+          </form>
+        </div>
+        
+      </div>
+    </div>
+  </div>
+
+
+  <div class="modal fade" id="editMusic" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Edit Music:</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form action = "/user/edit-music/<%=data[0].nameCode%>" method = "POST">
+            <div class="form-group">
+              <label for="message-text" class="col-form-label">name:</label>
+              <input id="edit-music-name" type = "text" name = "name" class="form-control"></input>
+              <input id="edit-music-link" type="hidden" name="link" value="" />
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              <input type="submit" class="btn btn-primary" value="Save">
+            </div>
+          </form>
+        </div>
+        
+      </div>
+    </div>
+  </div>
+
+
+  <div class="modal fade" id="deleteMusic" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Delete Music:</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form action = "/user/delete-music/<%=data[0].nameCode%>" method = "POST">
+            <div class="form-group">
+              <label for="message-text" class="col-form-label">Do you want to delete this music?</label>
+              <input disabled id="delete-music-name" type = "text" name = "name" class="form-control"></input>
+              <input id="delete-music-link" type="hidden" name="link" value="" />
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              <input type="submit" class="btn btn-primary" value="Yes">
+            </div>
+          </form>
+        </div>
+        
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="exampleModalRunCode" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Run code</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+            <div class="form-group">
+              <label for="message-text" class="col-form-label">input:</label>
+              <input id="input" type = "text" class="form-control" id="message-text"></input>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              <input onclick="runCode()" class="btn btn-primary" value="Run">
+            </div>
+          Output:
+          <textarea readonly cols="30" id="output" ></textarea> 
+        </div>
+        
+      </div>
+    </div>
+  </div>
+
+
   <div class="modal fade" id="exampleModal3" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
@@ -910,6 +1079,50 @@ function searchToggle(obj, evt){
       }
       on=!on;
     })
+
+    function playMusic(link){
+      console.log("change music")
+      var audio = document.getElementById("audio_mp3");
+      audio.src=link;
+      audio.load();
+      audio.play();
+    }
+
+    function runCode() {
+      document.getElementById("output").value ="";
+    var xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+          console.log(this.responseText); 
+          var obj = JSON.parse(this.responseText)
+           
+            if(obj.output==null){
+              document.getElementById("output").value = obj.error;
+            }else{
+              document.getElementById("output").value = obj.output;
+            }
+            
+            
+       }
+    };
+    var input, inputRadio;
+    if($('#input').val()===""){
+      input = "";
+      inputRadio = "false";
+    }else{
+      input = $('#input').val();
+      inputRadio ="true";
+    }
+    console.log(inputRadio)
+    var data = new FormData();
+    data.append('code',editor.getSession().getValue());
+    data.append('input', input);
+    data.append('inputRadio', inputRadio);
+    data.append('lang', $('#lang').val());
+    xhttp.open("POST", "/user/compilecode");
+    console.log("debug: " + $('#lang').val())
+    xhttp.send(data);
+}
   </script>
 </body>
 

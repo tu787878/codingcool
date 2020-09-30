@@ -7,13 +7,16 @@ var cookieParser = require('cookie-parser');
 var Promise = require('promise');
 const fileUpload = require('express-fileupload');
 var tam = true;
-
+var compiler = require('compilex');
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(fileUpload());
-
+const fs = require('fs')
 app.use(session({
   secret : 'tudc'
 }));
+
+var option = {stats : true};
+compiler.init(option);
 //**********Login**********//
 
 app.use(cookieParser());
@@ -33,6 +36,7 @@ server.listen(process.env.PORT || 3000);
 
 //***********User*******//
 var mysql = require('mysql');
+const { stringify } = require("querystring");
 
 // var db = mysql.createConnection({
 //   host: "localhost",
@@ -284,6 +288,50 @@ function saveCodeToLibrary(user_id, nameCode, dess){
     });
 })
 }
+function updateLibrary(userId,nameCode,dess){
+  var sql = "UPDATE user_code set dess = ? WHERE user_id = ? AND name_code = ?";
+  return new Promise((resolve, reject) => {
+    db.query(sql,[dess, userId, nameCode], (err,result) => {
+        if(err) reject(err);
+        resolve("success");
+      // console.log(result)
+    });
+})
+}
+
+function deleteLibrary(userId, nameCode){
+  var sql = "DELETE FROM user_code WHERE user_id = ? AND name_code = ?";
+  return new Promise((resolve, reject) => {
+    db.query(sql,[userId, nameCode], (err,result) => {
+        if(err) reject(err);
+        resolve("success");
+      // console.log(result)
+    });
+})
+
+}
+
+function updateMusic(userId, name, link){
+  var sql = "UPDATE music set name = ? WHERE user_id = ? AND link = ?";
+  return new Promise((resolve, reject) => {
+    db.query(sql,[name, userId, link], (err,result) => {
+        if(err) reject(err);
+        resolve("success");
+      // console.log(result)
+    });
+})
+}
+
+function deleteMusic(userId, link){
+  var sql = "DELETE FROM music WHERE user_id = ? AND link = ?";
+  return new Promise((resolve, reject) => {
+    db.query(sql,[userId, link], (err,result) => {
+        if(err) reject(err);
+        resolve("success");
+      // console.log(result)
+    });
+})
+}
 function makeNameCode(length) {
   var result           = '';
   var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
@@ -326,13 +374,14 @@ app.post('/user/upload/:nameCode', function(req, res) {
   let nameCode = req.params.nameCode;
 
   // Use the mv() method to place the file somewhere on your server
-  var link = __dirname + '/public/mp3-upload/' + req.files.sampleFile.name;
+  var nameLink = 'mp3-upload/' +  new Date().getTime().toString() + "-" + req.files.sampleFile.name;
+  var link = __dirname + '/public/' + nameLink;
   if(!req.session.userId)
-    return redirect('/user/login/' + nameCode); 
+    return res.redirect('/user/login/' + nameCode); 
   sampleFile.mv(link, function(err) {
     if (err)
       return res.status(500).send(err);
-    saveMusic(req.session.userId, name, link).then(()=>{
+    saveMusic(req.session.userId, name, nameLink).then(()=>{
       res.redirect('/' + nameCode);
     })
   });
@@ -498,14 +547,18 @@ app.post('/newUsername/:nameCode', (req,res) => {
 app.get('/user/login/:nameCode',(req,res)=>{
   res.render('login',{nameCode:req.params.nameCode});
 })
+app.get('/user/login',(req,res)=>{
+  res.render('login',{nameCode:""});
+})
 
 app.post('/user/login',(req,res)=>{
   var email = req.body.email;
   var password = req.body.password;
   var nameCode = req.body.nameCode;
+  if(nameCode===0)
+    nameCode ="";
   checkLogin(email,password).then(data=>{
-    console.log("user_id " + data[0].user_id);
-    if(data[0].user_id!=""){
+    if(data[0]!=undefined){
       req.session.userId = data[0].user_id;
       req.session.name = data[0].name;
       if(nameCode)
@@ -517,11 +570,17 @@ app.post('/user/login',(req,res)=>{
     else{
       res.redirect('/user/login?err');
     }
+  }).catch(err=>{
+    console.log(err)
   })
 })
 
 app.get('/user/signup/:nameCode',(req,res)=>{
   res.render('signup',{nameCode:req.params.nameCode});
+})
+
+app.get('/user/signup',(req,res)=>{
+  res.render('signup',{nameCode:""});
 })
 
 app.post('/user/signup',(req,res)=>{
@@ -536,7 +595,6 @@ console.log("email " + email)
     }
     
     else{
-      console.log("hihihih");
 
       var user_id = new Date().getTime().toString();
       var active = 1;
@@ -576,6 +634,172 @@ app.post('/user/add-code/:nameCode', (req,res) => {
     res.redirect('/user/login/' + nameCode);
   }
 })
+app.post('/user/edit-library', (req,res) => {
+  var dess = req.body.dess;
+  var nameCode = req.body.nameCode;
+  if(req.session.userId){
+    var userId = req.session.userId;
+    updateLibrary(userId, nameCode, dess).then(()=>{
+      res.redirect('/' + nameCode);
+    })
+
+  }else{
+    res.redirect('/user/login/' + nameCode);
+  }
+})
+
+app.post('/user/edit-music/:nameCode', (req,res) => {
+  var name = req.body.name;
+  var link = req.body.link;
+  var nameCode = req.params.nameCode;
+  if(req.session.userId){
+    var userId = req.session.userId;
+    updateMusic(userId, name, link).then(()=>{
+      res.redirect('/' + nameCode);
+    })
+
+  }else{
+    res.redirect('/user/login/' + nameCode);
+  }
+})
+
+app.post('/user/delete-music/:nameCode', (req,res) => {
+  var link = req.body.link;
+  var nameCode = req.params.nameCode;
+  if(req.session.userId){
+    var userId = req.session.userId;
+    deleteMusic(userId, link).then(()=>{
+      try {
+        fs.unlinkSync(__dirname + '/public/' + link)
+        res.redirect('/' + nameCode);
+        //file removed
+      } catch(err) {
+        console.error(err)
+        res.redirect('/' + nameCode);
+      }
+      
+    })
+
+  }else{
+    res.redirect('/user/login/' + nameCode);
+  }
+})
+
+app.post('/user/delete-library', (req,res) => {
+  var nameCode = req.body.nameCode;
+  if(req.session.userId){
+    var userId = req.session.userId;
+    deleteLibrary(userId, nameCode).then(()=>{
+      res.redirect('/' + nameCode);
+    }).catch(err =>{
+      console.log(err)
+      })
+
+  }else{
+    res.redirect('/user/login/' + nameCode);
+  }
+})
+
+// app.post('/user/share-library', (req,res) => {
+//   var nameCode = req.body.nameCode;
+//   var email = req.body.email;
+//   if(req.session.userId){
+//     var userId = req.session.userId;
+//     deleteLibrary(userId, nameCode, email).then(()=>{
+//       res.redirect('/' + nameCode);
+//     })
+
+//   }else{
+//     res.redirect('/user/login/' + nameCode);
+//   }
+// })
+
+app.post('/user/compilecode' , function (req , res ) {
+    console.log(req.body)
+  var code = req.body.code;	
+  console.log("code: " +code);
+  var input = req.body.input;
+  console.log(input)
+    var inputRadio = req.body.inputRadio;
+    var lang = req.body.lang;
+    console.log("lang: " + lang);
+    if(lang === "c_cpp")
+    {        
+        if(inputRadio === "true")
+        {    
+        	var envData = { OS : "linux" , cmd : "gcc"};	   	
+        	compiler.compileCPPWithInput(envData , code ,input , function (data) {
+        		if(data.error)
+        		{
+        			res.send(data.error);    		
+        		}
+        		else
+        		{
+        			res.send(data.output);
+        		}
+        	});
+	   }
+	   else
+	   {
+	   	
+	   	var envData = { OS : "linux" , cmd : "gcc"};	   
+        	compiler.compileCPP(envData , code , function (data) {
+        	if(data.error)
+        	{
+        		res.send(data.error);
+        	}    	
+        	else
+        	{
+        		res.send(data.output);
+        	}
+    
+            });
+	   }
+    }else
+    if( lang === "python")
+    {
+        if(inputRadio === "true")
+        {
+            var envData = { OS : "linux"};
+            compiler.compilePythonWithInput(envData , code , input , function(data){
+                res.send(data);
+            });            
+        }
+        else
+        {
+            var envData = { OS : "linux"};
+            compiler.compilePython(envData , code , function(data){
+                res.send(data);
+            });
+        }
+    }else 
+    if(lang === "java")
+    {
+      console.log("hiwww");
+        if(inputRadio === "true")
+        {
+            var envData = { OS : "linux" };     
+            console.log("input" + code);
+            compiler.compileJavaWithInput( envData , code,input , function(data){
+                res.send(data);
+            });
+        }
+        else
+        {
+            var envData = { OS : "linux" };     
+            console.log(code);
+            compiler.compileJava( envData , code , function(data){
+              res.send(data);
+          });    
+
+        }
+
+    }else {
+      var obj = { error:"language is not supported" };
+      res.send(JSON.stringify(obj));
+    }
+    
+});
 var allUser = [];
 const arrUserInfo = {};
 

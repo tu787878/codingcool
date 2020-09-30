@@ -5,7 +5,7 @@ function maudio(_opt){
   }
   opt.tpl = '\
     <div class="maudio">\
-      <audio src="" initaudio="false"></audio>\
+      <audio id="audio_mp3" src="" initaudio="false"></audio>\
       <div class="audio-control">\
           <a href="javascript:;" class="fast-reverse"></a>\
           <a href="javascript:;" class="play"></a>\
@@ -14,7 +14,7 @@ function maudio(_opt){
               <div class="progress-pass"></div>\
           </div>\
           <div class="time-keep">\
-              <span class="current-time">00:00</span> / <span class="duration">00:00</span>\
+              <span class="current-time">00:00</span> \
           </div>\
           <a class="mute"></a>\
           <div class="volume-bar">\
