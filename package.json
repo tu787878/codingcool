@@ -11,6 +11,7 @@
   "license": "ISC",
   "dependencies": {
     "body-parser": "^1.18.2",
+    "compile-run": "^2.3.4",
     "compilex": "^0.7.4",
     "cookie-parser": "^1.4.3",
     "cookie-session": "^1.4.0",

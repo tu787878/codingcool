@@ -27,6 +27,9 @@
 <script>
   var localAdress = "http://localhost:3000/";
 </script>
+<link rel="stylesheet"
+      href="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.2.1/build/styles/default.min.css">
+<script src="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.2.1/build/highlight.min.js"></script>
     <!-- Global site tag (gtag.js) - Google Analytics -->
     <!-- <script async src="https://www.googletagmanager.com/gtag/js?id=UA-133433427-1"></script>
 <script>
@@ -76,7 +79,8 @@
     right: 0;
     bottom: 0;
     left: 0;
-    height: 100%;
+    height: 100%; 
+    /* background :  url(https://i.pinimg.com/originals/86/ff/b8/86ffb87572d657f335cd7cd828c70de3.jpg); */
 }
 .videoxxx{
   max-width: 270px;
@@ -91,7 +95,9 @@
 .voice{
     padding-left: 10px;
 }
-
+/* .problem-show{
+  width: 100%;
+} */
 </style>
 </head>
 
@@ -131,12 +137,12 @@
                             <a href="#demos" class="btn btn-navbar dropdown-toggle mx-3" data-toggle="dropdown">Action</a>
                             <div id="demos" class="dropdown-menu">
                                 <a class="dropdown-item active" href="">Action</a>
-                                <a class="dropdown-item" href="#" onclick="myFunctionCopy()">Share</a>
-                                <a class="dropdown-item" href="#" id="modall3">Add to your codes</a>
+                                <a class="dropdown-item" href="javascript:void(0)" onclick="myFunctionCopy()">Share</a>
+                                <a class="dropdown-item" href="javascript:void(0)" id="modall3">Add to your codes</a>
                                 <%if (data[0].passWord == '' || data[0].passWord == null) { %>
-                                <a class="dropdown-item modall" id="modall" href="#"> Set Password</a>
+                                <a class="dropdown-item modall" id="modall" href="javascript:void(0)"> Set Password</a>
                                 <% } else { %>
-                                  <a class="dropdown-item modall" href="#"> <code> Your password:</code> <%=data[0].passWord%></a>
+                                  <a class="dropdown-item modall" href="javascript:void(0)"> <code> Your password:</code> <%=data[0].passWord%></a>
                                
                                 <% } %>
                             </div>
@@ -144,8 +150,8 @@
                         <span class="mr-3"></span>
 
                         <select id="lang" class="size-select">
-                          <option value="c_cpp">C</option>
-                          <option value="c_cpp">C++</option>
+                          <option value="c">C</option>
+                          <option value="cpp">C++</option>
                           <option value="csharp">C#</option>
                           <option value="python">Python</option>
                           <option value="html">Html</option>
@@ -206,6 +212,7 @@
                       <button id="modallRunCode" type="button" class="btn btn-success">Run
                         <i class="material-icons">play_circle_filled</i>
                     </button>
+                    
                         <ul class="nav navbar-nav ml-auto d-none d-md-flex border-left">
                             <!-- <li class="nav-item">
         <a href="" class="nav-link">
@@ -242,27 +249,27 @@
                                             </div>
                                             <div class="dropdown-item d-flex">
                                                 <div class="mr-3">
-                                                    <a href="#">
+                                                    <a href="javascript:void(0)">
                                                         <div class="avatar avatar-xs" style="width: 32px; height: 32px;">
                                                             <span class="avatar-title bg-purple rounded-circle"><i class="material-icons icon-16pt">person_add</i></span>
                                                         </div>
                                                     </a>
                                                 </div>
                                                 <div class="flex">
-                                                    New user <a href="#">Peter Parker</a> signed up.<br>
+                                                    New user <a href="javascript:void(0)">Peter Parker</a> signed up.<br>
                                                     <small class="text-muted">1 hour ago</small>
                                                 </div>
                                             </div>
                                             <div class="dropdown-item d-flex">
                                                 <div class="mr-3">
-                                                    <a href="#">
+                                                    <a href="javascript:void(0)">
                                                         <div class="avatar avatar-xs" style="width: 32px; height: 32px;">
                                                             <span class="avatar-title rounded-circle">JD</span>
                                                         </div>
                                                     </a>
                                                 </div>
                                                 <div class="flex">
-                                                    <a href="#">Big Joe</a> <small class="text-muted">wrote:</small><br>
+                                                    <a href="javascript:void(0)">Big Joe</a> <small class="text-muted">wrote:</small><br>
                                                     <div>Hey, how are you? What about our next meeting</div>
                                                     <small class="text-muted">2 minutes ago</small>
                                                 </div>
@@ -281,27 +288,27 @@
                                             </div>
                                             <div class="dropdown-item d-flex">
                                                 <div class="mr-3">
-                                                    <a href="#">
+                                                    <a href="javascript:void(0)">
                                                         <div class="avatar avatar-xs" style="width: 32px; height: 32px;">
                                                             <span class="avatar-title bg-purple rounded-circle"><i class="material-icons icon-16pt">person_add</i></span>
                                                         </div>
                                                     </a>
                                                 </div>
                                                 <div class="flex">
-                                                    New user <a href="#">Peter Parker</a> signed up.<br>
+                                                    New user <a href="javascript:void(0)">Peter Parker</a> signed up.<br>
                                                     <small class="text-muted">1 hour ago</small>
                                                 </div>
                                             </div>
                                             <div class="dropdown-item d-flex">
                                                 <div class="mr-3">
-                                                    <a href="#">
+                                                    <a href="javascript:void(0)">
                                                         <div class="avatar avatar-xs" style="width: 32px; height: 32px;">
                                                             <span class="avatar-title rounded-circle">JD</span>
                                                         </div>
                                                     </a>
                                                 </div>
                                                 <div class="flex">
-                                                    <a href="#">Big Joe</a> <small class="text-muted">wrote:</small><br>
+                                                    <a href="javascript:void(0)">Big Joe</a> <small class="text-muted">wrote:</small><br>
                                                     <div>Hey, how are you? What about our next meeting</div>
                                                     <small class="text-muted">2 minutes ago</small>
                                                 </div>
@@ -320,27 +327,27 @@
                                             </div>
                                             <div class="dropdown-item d-flex">
                                                 <div class="mr-3">
-                                                    <a href="#">
+                                                    <a href="javascript:void(0)">
                                                         <div class="avatar avatar-xs" style="width: 32px; height: 32px;">
                                                             <span class="avatar-title bg-purple rounded-circle"><i class="material-icons icon-16pt">person_add</i></span>
                                                         </div>
                                                     </a>
                                                 </div>
                                                 <div class="flex">
-                                                    New user <a href="#">Peter Parker</a> signed up.<br>
+                                                    New user <a href="javascript:void(0)">Peter Parker</a> signed up.<br>
                                                     <small class="text-muted">1 hour ago</small>
                                                 </div>
                                             </div>
                                             <div class="dropdown-item d-flex">
                                                 <div class="mr-3">
-                                                    <a href="#">
+                                                    <a href="javascript:void(0)">
                                                         <div class="avatar avatar-xs" style="width: 32px; height: 32px;">
                                                             <span class="avatar-title rounded-circle">JD</span>
                                                         </div>
                                                     </a>
                                                 </div>
                                                 <div class="flex">
-                                                    <a href="#">Big Joe</a> <small class="text-muted">wrote:</small><br>
+                                                    <a href="javascript:void(0)">Big Joe</a> <small class="text-muted">wrote:</small><br>
                                                     <div>Hey, how are you? What about our next meeting</div>
                                                     <small class="text-muted">2 minutes ago</small>
                                                 </div>
@@ -416,7 +423,7 @@
                 <div class="mdk-drawer  js-mdk-drawer" id="default-drawer" data-align="start">
                     <div class="mdk-drawer__content">
                         <div class="sidebar sidebar-left ps sidebar-dark bg-dark" data-perfect-scrollbar>
-                            <div class="sidebar-heading sidebar-m-t"><%=user%><a id="modall2" href="#"><i class="voice fas fa-pencil-alt"></i></a><i  id="onMicro" onclick="onMicro()" class="fas fa-microphone-alt voice"></i><i style="color: aqua;"  id="offMicro" onclick="offMicro()" class="fas fa-microphone-alt-slash voice"></i></div>
+                            <div class="sidebar-heading sidebar-m-t"><%=user%><a id="modall2" href="javascript:void(0)"><i class="voice fas fa-pencil-alt"></i></a><i  id="onMicro" onclick="onMicro()" class="fas fa-microphone-alt voice"></i><i style="color: aqua;"  id="offMicro" onclick="offMicro()" class="fas fa-microphone-alt-slash voice"></i></div>
                             <ul class="sidebar-menu">
                                 <li class="sidebar-menu-item">
                                   <a class="sidebar-menu-button" data-toggle="collapse" href="#layouts_menu">
@@ -487,7 +494,7 @@
                                 </a>
                                 <ul class="sidebar-submenu collapse" id="layouts_menuu">
                                   <% if(login != null){ %>
-                                    <p><a id="modall4"  style="padding-left: 30px;" href="#">Add mp3 ...</a></p>
+                                    <p><a id="modall4"  style="padding-left: 30px;" href="javascript:void(0)">Add mp3 ...</a></p>
                                     
                                   <% } else{ %>  
                                     <p><a  style="padding-left: 30px;" href="/user/login/<%=data[0].nameCode%>">Login here!</a></p>
@@ -496,7 +503,7 @@
                                     <% musics.forEach(function(music){ %>
                                     <li class="sidebar-menu-item active"></li>
                                         <div class="sidebar-menu-button">
-                                            <a class="sidebar-menu-button" href="#"><span onclick="playMusic('<%= music.link%>')" style="color: white;" class="sidebar-menu-text"><%= music.name%></span></a><i onclick="editMusic('<%= music.name%>','<%= music.link%>')" class="voice fas fa-pencil-alt"></i><i onclick="deleteMusic('<%= music.name%>','<%= music.link%>')" style="padding-left: 5px;" class="far fa-trash-alt delete-music <%= music.link%>"></i>
+                                            <a class="sidebar-menu-button" href="javascript:void(0)"><span onclick="playMusic('<%= music.link%>')" style="color: white;" class="sidebar-menu-text"><%= music.name%></span></a><i onclick="editMusic('<%= music.name%>','<%= music.link%>')" class="voice fas fa-pencil-alt"></i><i onclick="deleteMusic('<%= music.name%>','<%= music.link%>')" style="padding-left: 5px;" class="far fa-trash-alt delete-music <%= music.link%>"></i>
                                           </div>
                                     </li>
                                       <% }); %>
@@ -506,22 +513,28 @@
                                  
                               </li>
                             </ul>
-                            <div class="sidebar-p-a sidebar-b-y">
-                              <div class="d-flex align-items-top mb-2">
-                                  <div class="sidebar-heading m-0 p-0 flex text-body js-text-body">Progress</div>
-                                  <div class="font-weight-bold text-success">60%</div>
-                              </div>
-                              <div class="progress">
-                                  <div class="progress-bar bg-success" role="progressbar" style="width: 60%" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100"></div>
-                              </div>
-                          </div>
-                          <div class="sidebar-p-a sidebar-b-y">
+                         
+                        <div class="sidebar-p-a sidebar-b-y">
                           <button id="snow" type="button" class="btn btn-primary">
                             <i class="material-icons">ac_unit</i>
                           </button>
+                          &nbsp;&nbsp;
+                          <div class="sidebar-p-a">
+                            <a href="/user/problem/<%=data[0].nameCode%>" class="btn btn-outline-success btn-block">Excercise!</a>
+                          </div>
+                        
+                        <%if(problem){%>
+                          Ask by <%=problem[0].company%> - <%=problem[0].level%> #<%=problem[0].stt%> 
+                          <a href="#" onClick="window.open('/problem/zoom?id=<%=problem[0].stt%>','pagename','resizable,height=500,width=500'); return false;">Zoom++</a><noscript>You need Javascript to use the previous link or use <a href="yourpage.htm" target="_blank">Zoom++</a></noscript>
+                          <br>
+                          <pre class="problem-show">
+                          <code class="plaintext"><%=problem[0].problem%></code>
+                          </pre>
+                        <%}%>
                         </div>
+                 
                             <div class="sidebar-p-a">
-                                <a href="https://themeforest.net/item/stack-admin-bootstrap-4-dashboard-template/22959011" class="btn btn-outline-primary btn-block">Purchase &dollar;35</a>
+                                <a href="/user/purschase" class="btn btn-outline-primary btn-block">Purchase &dollar;35 to get in-depth solutions</a>
                             </div>
 
                         </div>
@@ -671,8 +684,12 @@ $("#lang").val("<%=data[0].lang%>");
 $( "#lang" )
   .change(function () {
     var value = $(this).val();
-  
-    editor.getSession().setMode("ace/mode/" + value);
+    if(value === 'cpp' || value === 'c')
+      var value2 = 'c_cpp';
+    else 
+      var value2 = value
+      console.log("lang: " + value);
+    editor.getSession().setMode("ace/mode/" + value2);
     var data = editor.getSession().getValue();
     // console.log(value);
     socket.emit('lang', {
@@ -711,6 +728,8 @@ $("#modall4").on('click',function(){
   $('#exampleModal4').modal('show')
 })
 $("#modallRunCode").on('click',function(){
+  document.getElementById("output").value ="";
+  $('#loading-runCode').hide();
   $('#exampleModalRunCode').modal('show')
 })
 function editLibrary(nameCode,dess){
@@ -733,6 +752,11 @@ function deleteMusic(name, link){
   $('#delete-music-link').val(link);
   $('#deleteMusic').modal('show')
 }
+document.addEventListener('DOMContentLoaded', (event) => {
+  document.querySelectorAll('pre code').forEach((block) => {
+    hljs.highlightBlock(block);
+  });
+});
 // socket.on('dataOld', old => {
 //   silent = true;
 //   console.log(old[0].data);
@@ -750,7 +774,10 @@ socket.on('nes', data => {
      case "javascript": cmt = "//";
      cmt2 = "";
      break;
-     case "c_cpp"  : cmt = "//";
+     case "cpp"  : cmt = "//";
+     cmt2 = "";
+     break;
+     case "c"  : cmt = "//";
      cmt2 = "";
      break;
      case "csharp": cmt = "/*";
@@ -973,14 +1000,15 @@ function searchToggle(obj, evt){
         <div class="modal-body">
             <div class="form-group">
               <label for="message-text" class="col-form-label">input:</label>
-              <input id="input" type = "text" class="form-control" id="message-text"></input>
+              <textarea class="form-control" id="input" rows="3"></textarea> 
             </div>
             <div class="modal-footer">
               <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-              <input onclick="runCode()" class="btn btn-primary" value="Run">
+              <button onclick="runCode()" class="btn btn-primary">Run</button>
             </div>
+            <div id="loading-runCode" class="loader loader-primary"></div>
           Output:
-          <textarea readonly cols="30" id="output" ></textarea> 
+          <textarea disabled class="form-control" id="output" rows="3"></textarea> 
         </div>
         
       </div>
@@ -1087,19 +1115,22 @@ function searchToggle(obj, evt){
       audio.load();
       audio.play();
     }
-
+    $('#loading-runCode').hide();
     function runCode() {
+      $('#loading-runCode').show();
       document.getElementById("output").value ="";
     var xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function() {
         if (this.readyState == 4 && this.status == 200) {
           console.log(this.responseText); 
           var obj = JSON.parse(this.responseText)
-           
-            if(obj.output==null){
-              document.getElementById("output").value = obj.error;
+          $('#loading-runCode').hide();
+            if(obj.stderr!=""){
+              document.getElementById("output").value = obj.stderr;
+              document.getElementById("output").style.height = (document.getElementById("output").scrollHeight)+"px";
             }else{
-              document.getElementById("output").value = obj.output;
+              document.getElementById("output").value = obj.stdout;
+              document.getElementById("output").style.height = (document.getElementById("output").scrollHeight)+"px";
             }
             
             

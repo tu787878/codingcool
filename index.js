@@ -14,7 +14,7 @@ const fs = require('fs')
 app.use(session({
   secret : 'tudc'
 }));
-
+const {c, cpp, node, python, java} = require('compile-run');
 var option = {stats : true};
 compiler.init(option);
 //**********Login**********//
@@ -37,6 +37,8 @@ server.listen(process.env.PORT || 3000);
 //***********User*******//
 var mysql = require('mysql');
 const { stringify } = require("querystring");
+const { send } = require("process");
+const { isRegExp } = require("util");
 
 // var db = mysql.createConnection({
 //   host: "localhost",
@@ -57,37 +59,16 @@ function createNewCode(name, pass, member, lang){
     var sql = "INSERT INTO datacode (nameCode, data, passWord, member, lang) VALUES (?, ?, ?, ?, ?)";
     var helloworld = "";
     switch (lang) {
-      case "c_cpp": helloworld = "#include <iostream>\n\
-  using namespace std;\n \
-   \n\
-  int main()\n\
-  {\n\
-    cout << 'Hello World' << endl;\n\
-   \n\
-    cin.get();\n\
-    return 0;\n\
-  }";
+      case "cpp": helloworld = 
+      `#include <iostream>
+      using namespace std;
+      
+      int main() {
+        cout << "Goodbye, Welt!" << std::endl;
+        return 0;
+      }`;
         break;
-      case "csharp": helloworld = "// A Hello World! program in C#.\n\
-  using System;\n\
-  namespace HelloWorld\n\
-  {\n\
-      class Hello \n\
-      {\n\
-          static void Main() \n\
-          {\n\
-              Console.WriteLine('Hello World!');\n\
-  \n\
-              // Keep the console window open in debug mode.\n\
-              Console.WriteLine('Press any key to exit.');\n\
-              Console.ReadKey();\n\
-          }\n\
-      }\n\
-  }\n";
-          break;
-        case "python": helloworld = "# This program prints Hello, world!\n\
-  \n\
-  print('Hello, world!')\n";
+      case "python": helloworld = `print("Hello World!!")`;
           break;
         case "html": helloworld = "<html>\n\
   <header><title>This is title</title></header>\n\
@@ -121,14 +102,15 @@ function createNewCode(name, pass, member, lang){
   \n\
   </html>\n";
   break;
-  case "java": helloworld = "public class HelloWorld {\n\
-  \n\
-      public static void main(String[] args) {\n\
-          // Prints 'Hello, World' to the terminal window.\n\
-          System.out.println('Hello, World');\n\
-      }\n\
-  \n\
-  }\n";
+  case "java": helloworld = `public class Main 
+  {
+   
+         public static void main (String[] args)
+         {
+               // Ausgabe Hello World!
+               System.out.println("Hello World!!!!!!");
+         }
+  }`;
   break;
   case "php": helloworld = "<html>\n\
    <head>\n\
@@ -140,6 +122,8 @@ function createNewCode(name, pass, member, lang){
   </html>\n";
   break;
     }
+    console.log(lang)
+    console.log(helloworld)
     db.query(sql,[name,helloworld,pass,member,lang], function (err, result) {
       if (err) {
         // console.log(err);
@@ -161,10 +145,32 @@ function updateDataCode(id, data,lang){
     console.log("Record-1 Updated!!");
     // console.log(result);
 });
+
 var query2 = db.query(sql2, [lang, id], (err, result) => {
     console.log("Record-2 Updated!!");
 });
 };
+
+function updateCodeProblem(nameCode,problemId){
+  var sql = "UPDATE problem_code set problem =?  WHERE nameCode = ?";
+  return new Promise((resolve, reject) => {
+    db.query(sql,[problemId, nameCode], (err,result) => {
+        if(err) reject(err);
+        resolve(JSON.parse(JSON.stringify(result)));
+      // console.log(result)
+    });
+})
+}
+function updateProblem(id,stt,company,level,problem){
+  var sql = "UPDATE problem set stt = ? , company = ? , level = ? , problem = ?   WHERE id = ?";
+  return new Promise((resolve, reject) => {
+    db.query(sql,[stt,company,level,problem,id], (err,result) => {
+        if(err) reject(err);
+        resolve(JSON.parse(JSON.stringify(result)));
+      // console.log(result)
+    });
+})
+}
 function getDataCode(nameCode){
   var sql = "SELECT * FROM datacode WHERE nameCode = ?";
 
@@ -173,6 +179,17 @@ function getDataCode(nameCode){
         if(err) reject(err);
         resolve(JSON.parse(JSON.stringify(result)));
       // console.log(result)
+    });
+})
+}
+
+function getAllProblem(){
+  var sql = "SELECT * FROM problem";
+
+  return new Promise((resolve, reject) => {
+    db.query(sql, (err,result) => {
+        if(err) reject(err);
+        resolve(JSON.parse(JSON.stringify(result)));
     });
 })
 }
@@ -247,6 +264,30 @@ function getMusic(userId){
     });
 })
 }
+
+function getDataProblem(problemId){
+  var sql = "SELECT * FROM problem WHERE stt = ?";
+
+  return new Promise((resolve, reject) => {
+    db.query(sql,[problemId], (err,result) => {
+        if(err) reject(err);
+        resolve(JSON.parse(JSON.stringify(result)));
+      // console.log(result)
+    });
+})
+}
+
+function getCodeProblem(nameCode){
+  var sql = "SELECT problem FROM problem_code WHERE nameCode = ?";
+
+  return new Promise((resolve, reject) => {
+    db.query(sql,[nameCode], (err,result) => {
+        if(err) reject(err);
+        resolve(JSON.parse(JSON.stringify(result)));
+      // console.log(result)
+    });
+})
+}
 function saveUser(user_id, name, email, pasword, active){
   var sql = "INSERT INTO user (user_id, name, email, password, active) VALUES (?, ?, ?, ?, ?)";
   return new Promise((resolve, reject) => {
@@ -257,6 +298,28 @@ function saveUser(user_id, name, email, pasword, active){
     });
 })
 }
+
+function createCodeProblem(nameCode,problemId){
+  var sql = "INSERT INTO problem_code (nameCode,problem) VALUES (?, ?)";
+  return new Promise((resolve, reject) => {
+    db.query(sql,[nameCode,problemId], (err,result) => {
+        if(err) reject(err);
+        resolve(JSON.parse(JSON.stringify(result)));
+      // console.log(result)
+    });
+})
+}
+function saveProblem(stt,company,level,problem){
+  var sql = "INSERT INTO problem (stt,company,level,problem) VALUES (?, ?, ?, ?)";
+  return new Promise((resolve, reject) => {
+    db.query(sql,[stt,company,level,problem], (err,result) => {
+        if(err) reject(err);
+        resolve(JSON.parse(JSON.stringify(result)));
+      // console.log(result)
+    });
+})
+}
+
 
 function saveMusic(user_id, name, link){
   var sql = "INSERT INTO music (user_id, name, link) VALUES (?, ?, ?)";
@@ -374,7 +437,8 @@ app.post('/user/upload/:nameCode', function(req, res) {
   let nameCode = req.params.nameCode;
 
   // Use the mv() method to place the file somewhere on your server
-  var nameLink = 'mp3-upload/' +  new Date().getTime().toString() + "-" + req.files.sampleFile.name;
+  var nameLink = 'mp3-upload/' +  new Date().getTime().toString() + ".mp3";
+  console.log(nameLink)
   var link = __dirname + '/public/' + nameLink;
   if(!req.session.userId)
     return res.redirect('/user/login/' + nameCode); 
@@ -398,7 +462,7 @@ app.get('/', (req,res) => {
       nameCode = makeNameCode(8);
       let pass = '';
       let member = 5;
-      let lang = "c_cpp";
+      let lang = "cpp";
       createNewCode(nameCode, pass, member, lang);
       out = true;
       let sql = "SELECT * FROM datacode WHERE nameCode = ?";
@@ -429,7 +493,7 @@ app.post('/',(req,res) => {
       nameCode = makeNameCode(6);
       let pass = "";
       let member = 5;
-      let lang = "c_cpp";
+      let lang = "cpp";
       createNewCode(nameCode, pass, member, lang);
       out = true;
       let sql = "SELECT * FROM datacode WHERE nameCode = ?";
@@ -481,13 +545,16 @@ app.get('/:nameCode', (req,res) => {
   //   let soluong = result[0].soluong + 1;
   //   updateViewsUser("user",soluong);
   // })
+  
+    
+
   getDataCode(nameCode).then(function(result){
     // console.log(result.length);
     
     if(result.length == 0){
       let pass = '';
       let member = 5;
-      let lang = "c_cpp";
+      let lang = "cpp";
       createNewCode(nameCode, pass, member, lang);
       return res.redirect('/' + nameCode);
     }
@@ -500,20 +567,43 @@ app.get('/:nameCode', (req,res) => {
       return res.render('xuli',{nameCode: nameCode});
     }
     var login;
-    if(req.session.userId){
-      getUserDetails(req.session.userId).then((data) => {
-        login = data[0];
-        getLibrary(req.session.userId).then(library=>{
-          getMusic(req.session.userId).then(musics =>{
-            return res.render('coding',{data:result,user:req.session.name,linkCodes:null,musics:musics,login:login, library:library});
+    var str = "p-" + nameCode;
+    getCodeProblem(nameCode).then(problemId=>{
+      if(req.session.userId){
+        getUserDetails(req.session.userId).then((data) => {
+          login = data[0];
+          getLibrary(req.session.userId).then(library=>{
+            getMusic(req.session.userId).then(musics =>{
+              if(problemId[0] != undefined){
+                getDataProblem(problemId[0].problem).then(problem=>{
+                  return res.render('coding',{data:result,user:req.session.name,linkCodes:null,musics:musics,login:login, library:library, problem:problem});
+          
+                })
+              }else{
+                var problem = null;
+              return res.render('coding',{data:result,user:req.session.name,linkCodes:null,musics:musics,login:login, library:library, problem:problem});
 
+              }
+
+            })
           })
+          
         })
-        
-      })
-    } else{
-      return res.render('coding',{data:result,user:req.session.name,linkCodes:null,musics:null,login:null, library:null});
-    }
+      } else{
+        if(problemId[0] != undefined){
+          console.log("problem:" + problemId[0].problem)
+          getDataProblem(problemId[0].problem).then(problem=>{
+            console.log(problem)
+            return res.render('coding',{data:result,user:req.session.name,linkCodes:null,musics:null,login:null, library:null, problem:problem});
+    
+          })
+        }else{
+          var problem = null;
+          return res.render('coding',{data:result,user:req.session.name,linkCodes:null,musics:null,login:null, library:null, problem:problem});
+        }
+      }
+    })
+
   })
     
 });
@@ -542,6 +632,23 @@ app.post('/newUsername/:nameCode', (req,res) => {
   req.session.name=username;
   return res.redirect('/'+ nameCode);
 
+});
+
+app.get('/add-problem/:nameCode/:problemId', (req,res) => {
+  var nameCode = req.params.nameCode;
+  var problemId1 = req.params.problemId;
+
+  getCodeProblem(nameCode).then(problemId=>{
+    if(problemId[0] != undefined){
+      updateCodeProblem(nameCode,problemId1).then(()=>{
+        return res.redirect('/'+ nameCode);
+      })
+    }else{
+      createCodeProblem(nameCode,problemId1).then(()=>{
+        return res.redirect('/'+ nameCode);
+      })
+    }
+  })
 });
 
 app.get('/user/login/:nameCode',(req,res)=>{
@@ -620,6 +727,8 @@ app.get('/user/logout', (req,res)=>{
   req.session.destroy(); 
   res.redirect('/');
 })
+
+
 
 app.post('/user/add-code/:nameCode', (req,res) => {
   var dess = req.body.dess;
@@ -723,83 +832,196 @@ app.post('/user/compilecode' , function (req , res ) {
     var inputRadio = req.body.inputRadio;
     var lang = req.body.lang;
     console.log("lang: " + lang);
-    if(lang === "c_cpp")
+    if(lang === "cpp")
     {        
         if(inputRadio === "true")
         {    
-        	var envData = { OS : "linux" , cmd : "gcc"};	   	
-        	compiler.compileCPPWithInput(envData , code ,input , function (data) {
-        		if(data.error)
-        		{
-        			res.send(data.error);    		
-        		}
-        		else
-        		{
-        			res.send(data.output);
-        		}
-        	});
+          let resultPromise = cpp.runSource(code,{stdin:input});
+          resultPromise
+              .then(result => {
+                  res.send(result)
+              })
+              .catch(err => {
+                  console.log(err);
+              });  
 	   }
 	   else
 	   {
 	   	
-	   	var envData = { OS : "linux" , cmd : "gcc"};	   
-        	compiler.compileCPP(envData , code , function (data) {
-        	if(data.error)
-        	{
-        		res.send(data.error);
-        	}    	
-        	else
-        	{
-        		res.send(data.output);
-        	}
-    
-            });
+      let resultPromise = cpp.runSource(code);
+      resultPromise
+          .then(result => {
+              res.send(result)
+          })
+          .catch(err => {
+              console.log(err);
+          });  
 	   }
     }else
     if( lang === "python")
     {
         if(inputRadio === "true")
         {
-            var envData = { OS : "linux"};
-            compiler.compilePythonWithInput(envData , code , input , function(data){
-                res.send(data);
-            });            
+          let resultPromise = python.runSource(code,{stdin:input, executionPath: 'python3'});
+          resultPromise
+              .then(result => {
+                  res.send(result)
+              })
+              .catch(err => {
+                  console.log(err);
+              });      
         }
         else
         {
-            var envData = { OS : "linux"};
-            compiler.compilePython(envData , code , function(data){
-                res.send(data);
-            });
+            // var envData = { OS : "windows"};
+            // compiler.compilePython(envData , code , function(data){
+            //     res.send(data);
+            // });
+            let resultPromise = python.runSource(code,{ executionPath: 'python3'});
+            resultPromise
+                .then(result => {
+                    res.send(result)
+                })
+                .catch(err => {
+                    console.log(err);
+                });
+            
         }
     }else 
     if(lang === "java")
     {
-      console.log("hiwww");
         if(inputRadio === "true")
         {
-            var envData = { OS : "linux" };     
-            console.log("input" + code);
-            compiler.compileJavaWithInput( envData , code,input , function(data){
-                res.send(data);
-            });
+          let resultPromise = java.runSource(code,{stdin:input});
+          resultPromise
+              .then(result => {
+                  res.send(result)
+              })
+              .catch(err => {
+                  console.log(err);
+              });  
         }
         else
         {
-            var envData = { OS : "linux" };     
-            console.log(code);
-            compiler.compileJava( envData , code , function(data){
-              res.send(data);
-          });    
+          let resultPromise = java.runSource(code);
+          resultPromise
+              .then(result => {
+                  res.send(result)
+              })
+              .catch(err => {
+                  console.log(err);
+              });  
 
         }
 
+    }else if(lang === "c"){
+      if(inputRadio === "true")
+      {
+        let resultPromise = c.runSource(code,{stdin:input});
+        resultPromise
+            .then(result => {
+                res.send(result)
+            })
+            .catch(err => {
+                console.log(err);
+            });  
+      }
+      else
+      {
+        let resultPromise = c.runSource(code);
+        resultPromise
+            .then(result => {
+                res.send(result)
+            })
+            .catch(err => {
+                console.log(err);
+            });  
+
+      }
+    }else if(lang === "javascript"){
+      if(inputRadio === "true")
+      {
+        let resultPromise = node.runSource(code,{stdin:input});
+        resultPromise
+            .then(result => {
+                res.send(result)
+            })
+            .catch(err => {
+                console.log(err);
+            });  
+      }
+      else
+      {
+        let resultPromise = node.runSource(code);
+        resultPromise
+            .then(result => {
+                res.send(result)
+            })
+            .catch(err => {
+                console.log(err);
+            });  
+
+      }
     }else {
-      var obj = { error:"language is not supported" };
+      var obj = { stderr:"language is not supported" };
       res.send(JSON.stringify(obj));
     }
     
 });
+
+app.get('/user/problem/:nameCode', (req,res)=>{
+  var nameCode = req.params.nameCode;
+  getAllProblem().then((data)=>{
+    console.log(data);
+    res.render('problem', {problems:data, nameCode:nameCode});
+  })
+  
+})
+
+app.get('/admin/problem/upload', (req,res)=>{
+ 
+  res.render('upload-problem');
+  
+})
+
+app.post('/admin/problem/upload', (req,res) => {
+  var stt = req.body.stt;
+  var company = req.body.company;
+  var level = req.body.level;
+  var problem = req.body.problem;
+  
+
+  saveProblem(stt,company,level,problem)
+  res.redirect('/admin/problem/upload')
+})
+
+app.get('/admin/problem/edit/:problemId', (req,res)=>{
+  var problemId = req.params.problemId;
+  getDataProblem(problemId).then(data =>{
+    res.render('edit-problem',{problem:data[0]});
+  })
+})
+
+app.get('/problem/zoom', (req,res)=>{
+  var query = require('url').parse(req.url,true).query;
+  var problemId = query.id;
+  console.log("zzz:" + problemId)
+  getDataProblem(problemId).then(data =>{
+    res.render('zoom-problem',{problem:data[0]});
+  })
+})
+
+app.post('/admin/problem/edit', (req,res) => {
+  var id = req.body.id;
+  var stt = req.body.stt;
+  var company = req.body.company;
+  var level = req.body.level;
+  var problem = req.body.problem;
+
+  updateProblem(id, stt,company,level,problem)
+  res.redirect('/admin/problem/upload')
+})
+
 var allUser = [];
 const arrUserInfo = {};
 
